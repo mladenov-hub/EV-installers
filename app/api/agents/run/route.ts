@@ -6,10 +6,7 @@ import { createClient } from '@supabase/supabase-js';
 const execAsync = promisify(exec);
 
 // Initialize Supabase (Server-side)
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!
-);
+// Moved inside handler to prevent build-time crash if env vars are missing
 
 export async function POST(request: Request) {
     try {
@@ -23,6 +20,19 @@ export async function POST(request: Request) {
                 { status: 401 }
             );
         }
+
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
+
+        if (!supabaseUrl || !supabaseKey) {
+            console.error("Missing Supabase Credentials in API Route");
+             return NextResponse.json(
+                { error: 'Server Configuration Error: Missing DB Credentials' },
+                { status: 500 }
+            );
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
         let command = '';
 
