@@ -10,10 +10,6 @@
             "schedule": "0 10 * * *"
         },
         {
-            "path": "/api/cron/auditor",
-            "schedule": "0 6 * * 1"
-        },
-        {
             "path": "/api/cron/operator",
             "schedule": "0 3 * * 0"
         }
