@@ -62,46 +62,45 @@ export async function POST(request: Request) {
 
         if (error) {
             console.error('Supabase error:', error);
-            throw error;
+            return NextResponse.json(
+                { error: 'Database Error: Failed to save lead.' },
+                { status: 500 }
+            );
         }
 
-        // Send Email Notification
+        // Send Email Notification (Best Effort)
+        // We do not await this to ensure the user gets a fast response.
+        // In Vercel Serverless, we might need to await if the function freezes immediately, 
+        // but typically for a simple SMTP call, a short await is fine, or we accept the risk.
         const smtpUser = process.env.SMTP_USER;
         const smtpPass = process.env.SMTP_PASS;
 
         if (smtpUser && smtpPass) {
-            try {
-                const transporter = nodemailer.createTransport({
-                    host: 'smtp.gmail.com',
-                    port: 587,
-                    secure: false, // use STARTTLS
-                    auth: { user: smtpUser, pass: smtpPass },
-                    tls: { rejectUnauthorized: false }
-                });
+            // Wrap in a promise that we don't strictly block on for too long
+            const sendEmail = async () => {
+                try {
+                    const transporter = nodemailer.createTransport({
+                        host: 'smtp.gmail.com',
+                        port: 587,
+                        secure: false, // use STARTTLS
+                        auth: { user: smtpUser, pass: smtpPass },
+                        tls: { rejectUnauthorized: false }
+                    });
 
-                await transporter.sendMail({
-                    from: `"EV Lead Bot" <${smtpUser}>`,
-                    to: smtpUser, // Send to admin (self)
-                    subject: `🔌 New Lead: ${data.name} in ${data.zipCode}`,
-                    text: `
-New Lead Captured!
-
-Name: ${data.name}
-Email: ${data.email}
-Phone: ${data.phone || 'N/A'}
-Zip Code: ${data.zipCode}
-City/State: ${data.city || 'N/A'}, ${data.state || 'N/A'}
-Project: ${data.projectType}
-Vehicle: ${data.vehicle || 'N/A'}
-
-View in Dashboard: https://ev-installers-app.vercel.app/admin/dashboard
-                    `
-                });
-                console.log(`📧 Notification email sent to ${smtpUser}`);
-            } catch (emailError) {
-                console.error('Failed to send email notification:', emailError);
-                // Non-blocking error
-            }
+                    await transporter.sendMail({
+                        from: `"EV Lead Bot" <${smtpUser}>`,
+                        to: smtpUser, // Send to admin (self)
+                        subject: `🔌 New Lead: ${data.name} in ${data.zipCode}`,
+                        text: `New Lead Captured!\n\nName: ${data.name}\nEmail: ${data.email}\nPhone: ${data.phone || 'N/A'}\nZip: ${data.zipCode}\nVehicle: ${data.vehicle || 'N/A'}`
+                    });
+                    console.log(`📧 Notification email sent to ${smtpUser}`);
+                } catch (emailError) {
+                    console.error('Failed to send email notification:', emailError);
+                }
+            };
+            
+            // Execute email send but catch any errors so they don't affect the response
+            await sendEmail(); 
         }
 
         return NextResponse.json({ success: true });
@@ -109,7 +108,7 @@ View in Dashboard: https://ev-installers-app.vercel.app/admin/dashboard
     } catch (error) {
         console.error('Lead capture error:', error);
         return NextResponse.json(
-            { error: 'Failed to submit lead' },
+            { error: 'Internal Server Error' },
             { status: 500 }
         );
     }
