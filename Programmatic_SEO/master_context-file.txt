@@ -1,0 +1,170 @@
+Autonomous Revenue Architectures: The 2025 EV Infrastructure Protocol
+1. Executive Summary: The 2025 Advantage
+The "Option C" strategy (Programmatic SEO in the EV Niche) remains the highest-leverage play for passive income, but the execution has shifted. In 2024, you had to chain prompts manually. In 2025, with Claude 4.5 Sonnet and Gemini 3, we can deploy "Agentic Workflows" that self-correct and iterate.
+
+We are targeting the EV Charger Installation market. This sector is currently experiencing a "supply shock"—EV adoption is outpacing certified installer availability. By deploying a programmatic network of 10,000+ hyper-local landing pages (e.g., "Rivian Charger Installers in Naperville, IL"), we capture high-intent traffic and monetize it via:
+
+Lead Arbitrage: Selling leads to national networks like Qmerit ($50-$150/lead).
+
+Affiliate Commerce: Amazon/Manufacturer links for hardware (High-ticket items).
+
+Ad Revenue: High-CPM display ads on informational pages.
+
+2. The 2025 "Tri-Model" Swarm Architecture
+To execute this faster than any human team, we assign specific roles to the most capable models available today.
+
+Agent Role	Model Selection	2025 Strategic Advantage
+The Architect	Claude 4.5 Sonnet	
+The current SOTA (State of the Art) for coding. It understands complex Next.js 15 architectures and creates bug-free, type-safe code 40% faster than previous iterations.
+
+The Strategist	Gemini 3	
+With its massive context window, Gemini 3 can hold your entire competitor analysis, 50 PDF manuals of charger specs, and US Census data in memory simultaneously to spot patterns humans miss.
+
+The Operator	DeepSeek-R1	
+DeepSeek remains the cost-efficiency king. We use it for the heavy lifting: scraping 50,000 rows of utility data and cleaning dirty CSVs without burning your API budget.
+
+  
+3. The Master Context File (.cursorrules)
+This is the most critical asset you requested. In 2025, we don't just give prompts; we give the AI a "System Identity" via a .cursorrules file (or AGENCY_CONTEXT.md).
+
+Instructions:
+
+Create a new folder for your project.
+
+Create a file named .cursorrules in the root directory.
+
+Paste the following content. This file tells Cursor (and Claude 4.5) exactly how to behave, ensuring every line of code contributes to the revenue goal.
+
+#.cursorrules - EV INFRASTRUCTURE PSEO PROJECT
+
+VERSION: 2025.1.0
+STRATEGY: HIGH-VELOCITY PROGRAMMATIC SEO
+1. PROJECT IDENTITY & MISSION
+You are the Lead Full-Stack Architect for a Programmatic SEO (pSEO) platform targeting the "EV Charger Installation" niche. Objective: Build a highly performant, scalable Next.js 15 application capable of rendering 10,000+ static pages with sub-second load times. Business Goal: Maximize conversion rate for "Get a Quote" forms (Lead Gen) and Affiliate Click-throughs.
+
+2. TECH STACK (STRICT ENFORCEMENT)
+Framework: Next.js 15 (App Router required).
+
+Language: TypeScript (Strict mode).
+
+Styling: Tailwind CSS (Mobile-first).
+
+UI Components: Shadcn/UI (Radix primitives).
+
+Database: Supabase (PostgreSQL) for installer data and geolocation.
+
+Deployment: Vercel (Edge Functions).
+
+Analytics: PostHog (Event tracking).
+
+3. ARCHITECTURAL PATTERNS
+A. Programmatic Route Structure
+We do NOT build pages manually. You will implement dynamic route segments:
+
+/installers/[state]/[city] -> Targeting "EV Installer in [City],"
+
+/rebates/[zipcode] -> Targeting "EV Rebates in [Zip]"
+
+/vehicles/[make]/[model] -> Targeting "[Model] Home Charging Guide"
+
+B. Data-Driven Content (Anti-Spam)
+To avoid "Scaled Content Abuse" penalties:
+
+NEVER generate generic walls of text.
+
+ALWAYS inject structured data:
+
+Local Electrician Count (from DB).
+
+Average kWh pricing for that specific Zip Code.
+
+Specific Utility Provider Name (e.g., "PG&E" for San Francisco).
+
+Use JSON-LD schema markup on EVERY page (Service and LocalBusiness).
+
+C. Coding Standards (Claude 4.5 Optimization)
+Early Returns: Use guard clauses to keep nesting shallow.
+
+Server Components: Default to Server Components (RSC). Only use "use client" for interactive islands (forms, calculators).
+
+Type Safety: No any. Define strict interfaces for all Supabase returns.
+
+Performance: Use next/image with priority loading for LCP (Largest Contentful Paint) elements.
+
+4. CRITICAL WORKFLOWS
+Phase 1: The "DeepSeek" Data Pipeline
+When asked to import data:
+
+Expect raw CSVs scraped by DeepSeek-R1.
+
+Write a script scripts/seed-installers.ts to normalize city names and validate Zip codes.
+
+Batch insert into Supabase to avoid timeouts.
+
+Phase 2: The "Gemini" Content Strategy
+When generating copy:
+
+Use the "Spintax" logic.
+
+Variation A: Focus on Cost Savings ("Save $500 on install...").
+
+Variation B: Focus on Speed ("Get charged 5x faster...").
+
+Variation C: Focus on Property Value ("Increase home value...").
+
+5. UI/UX GUIDELINES (CONVERSION FOCUSED)
+Sticky CTA: The "Get Installer Quote" button must be visible on mobile at all times.
+
+Trust Signals: Display "Verified License" badges next to installer names.
+
+Speed: The site must score 90+ on PageSpeed Insights. Bloated JS is forbidden.
+
+6. INTERACTION PROTOCOL
+If I ask for a feature, plan it first in pseudo-code, then execute.
+
+If a file becomes too large (>200 lines), refactor into smaller components immediately.
+
+Always check for existing utility functions in lib/utils.ts before writing new ones.
+
+4. Execution Strategy: The 30-Day Sprint
+With the context file established, here is how we deploy the agents to build the asset.
+
+Week 1: The Data Foundation (DeepSeek-R1)
+Goal: Build a database of 50,000+ local data points.
+
+Action: Use DeepSeek-R1 to scrape the "Qualified Product Lists" from major utility providers and the national registry of electricians.
+
+Prompt for DeepSeek: "Write a Python script using Crawl4AI to extract every licensed electrician from. Output columns: Business Name, License Number, Phone, City, Zip. Filter for keywords 'EV', 'Solar', or 'High Voltage'."    
+
+Week 2: The Application Core (Claude 4.5 Sonnet)
+Goal: Deploy the functional "Skeleton" of the site.
+
+Action: Open Cursor. Drop the .cursorrules file into the root.
+
+Prompt for Claude: "Initialize the Next.js 15 project. Set up the Supabase connection based on the context file. Create the dynamic route structure for /installers/[state]/[city]. Build a responsive 'CityLandingPage' component that takes cityData as a prop and displays the number of installers and average cost."
+
+Week 3: The Content Synthesis (Gemini 3)
+Goal: Generate unique, valuable copy for 10,000 pages.
+
+Action: Feed Gemini 3 your raw data and competitor examples.
+
+Prompt for Gemini: "I am providing you with a CSV of installer data for Texas. Generate 50 unique variations of an introductory paragraph for a landing page. Use the data points (City Name, Electrician Count) in the text. Ensure the tone is authoritative and helpful. Output as a JSON object keyed by City ID."
+
+Week 4: Scale & Launch
+Goal: Indexing and Traffic.
+
+Action:
+
+Deploy to Vercel.
+
+Sitemap: Ensure your sitemap.ts dynamically generates all 10,000 URLs.
+
+Indexing: Submit the sitemap to GSC (Google Search Console).
+
+Monetization: Hook up the "Get Quote" form to a lead buyer (like Networx or a local aggregator) via Zapier/Make.
+
+5. Why This Works (The "Passive" Reality)
+Unlike an AI Agency (Option B), which requires constant human client management, or YouTube Automation (Option A), which requires a constant treadmill of new videos, Programmatic SEO builds a digital asset. Once the [City] page for "Austin" is ranking, it serves traffic 24/7 without your input. The "work" is front-loaded in the architecture and data collection—exactly what AI agents excel at.
+
+This plan utilizes the absolute bleeding edge of 2025 AI capabilities to reduce the "time-to-build" from months to days. You are essentially acting as the CEO of a digital construction crew that works at light speed.
+

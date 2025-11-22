@@ -1,0 +1,21 @@
+{
+    "name": "ev-installers-app",
+    "framework": "nextjs",
+    "buildCommand": "next build",
+    "devCommand": "next dev",
+    "installCommand": "npm install",
+    "crons": [
+        {
+            "path": "/api/cron/promoter",
+            "schedule": "0 10 * * *"
+        },
+        {
+            "path": "/api/cron/auditor",
+            "schedule": "0 6 * * 1"
+        },
+        {
+            "path": "/api/cron/operator",
+            "schedule": "0 3 * * 0"
+        }
+    ]
+}

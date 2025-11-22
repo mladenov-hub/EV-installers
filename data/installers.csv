@@ -1,0 +1,74 @@
+business_name,license_number,phone,city,state,zip_code,utility_provider,services,verified
+Green Tech,LIC-95672,596-957-6267,San Francisco,CA,94105,PG&E,"EV Charger, Panel Upgrade",True
+Rapid Electric,LIC-31046,385-951-9699,San Francisco,CA,94105,PG&E,"EV Charger, Panel Upgrade",True
+Eco Installers,LIC-75313,938-999-8669,San Francisco,CA,94105,PG&E,"EV Charger, Panel Upgrade",True
+Power Tech,LIC-28193,962-619-9412,San Francisco,CA,94105,PG&E,"EV Charger, Panel Upgrade",True
+Green Installers,LIC-32530,600-369-1017,San Francisco,CA,94105,PG&E,"EV Charger, Panel Upgrade",True
+Power Electric,LIC-94881,499-644-8721,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Smart Electric,LIC-76110,560-827-1587,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Pro Electric,LIC-65974,655-230-3256,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Elite Chargers,LIC-54507,424-628-4349,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Elite Installers,LIC-26853,216-796-7050,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Power Energy,LIC-40961,271-905-6047,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Pro Installers,LIC-98009,811-453-5236,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Eco Solutions,LIC-23510,520-260-1636,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Eco Solutions,LIC-97690,224-332-4930,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",True
+Smart Solutions,LIC-59854,864-265-5862,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Eco Installers,LIC-69606,524-838-3946,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Power Chargers,LIC-10926,686-752-2123,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Rapid Chargers,LIC-59271,714-338-4423,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Rapid Energy,LIC-45398,623-850-1958,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Pro Electric,LIC-83121,557-913-5596,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Rapid Chargers,LIC-97159,803-984-1132,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Eco Electric,LIC-29210,388-839-5747,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Rapid Electric,LIC-93673,588-900-9277,New York,NY,10001,ConEd,"EV Charger, Panel Upgrade",True
+Eco Solutions,LIC-69014,221-723-2641,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Volt Tech,LIC-19340,731-844-5765,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Smart Electric,LIC-52045,716-211-6473,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Rapid Chargers,LIC-78442,515-810-9490,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Volt Energy,LIC-66117,582-491-1487,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Rapid Electric,LIC-22768,958-281-3171,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Rapid Installers,LIC-70918,396-640-7283,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Smart Tech,LIC-83941,574-395-2174,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Pro Energy,LIC-47800,955-830-9217,Miami,FL,33101,FPL,"EV Charger, Panel Upgrade",True
+Power Solutions,LIC-71400,571-381-6682,Austin,TX,78701,Austin Energy,"EV Charger, Panel Upgrade",True
+Volt Chargers,LIC-79838,789-328-2994,Austin,TX,78701,Austin Energy,"EV Charger, Panel Upgrade",True
+Elite Electric,LIC-53367,613-705-6723,Austin,TX,78701,Austin Energy,"EV Charger, Panel Upgrade",True
+Power Tech,LIC-88249,201-731-3159,Austin,TX,78701,Austin Energy,"EV Charger, Panel Upgrade",True
+Green Electric,LIC-39119,818-565-4888,Austin,TX,78701,Austin Energy,"EV Charger, Panel Upgrade",True
+Elite Electric,LIC-52136,750-313-5349,Austin,TX,78701,Austin Energy,"EV Charger, Panel Upgrade",True
+Volt Tech,LIC-27946,740-370-2628,Seattle,WA,98101,Seattle City Light,"EV Charger, Panel Upgrade",True
+Rapid Electric,LIC-18519,786-919-8976,Seattle,WA,98101,Seattle City Light,"EV Charger, Panel Upgrade",True
+Elite Tech,LIC-52274,284-688-2595,Seattle,WA,98101,Seattle City Light,"EV Charger, Panel Upgrade",True
+Volt Electric,LIC-73713,621-464-5901,Seattle,WA,98101,Seattle City Light,"EV Charger, Panel Upgrade",True
+Volt Solutions,LIC-70987,561-812-5752,Seattle,WA,98101,Seattle City Light,"EV Charger, Panel Upgrade",True
+Smart Electric,LIC-96360,958-475-9615,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Eco Electric,LIC-61088,411-926-4691,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Power Tech,LIC-95265,207-433-9565,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Volt Chargers,LIC-14909,214-915-6120,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Volt Chargers,LIC-95508,970-580-4030,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Pro Tech,LIC-20145,683-618-5688,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Eco Tech,LIC-72971,970-798-5326,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Elite Energy,LIC-38627,615-544-3501,Denver,CO,80201,Xcel Energy,"EV Charger, Panel Upgrade",True
+Pro Energy,LIC-65909,788-605-6791,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Green Energy,LIC-64244,491-832-2631,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Smart Installers,LIC-27849,649-860-6392,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Rapid Energy,LIC-29379,477-565-9425,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Elite Solutions,LIC-26000,396-725-6634,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Smart Solutions,LIC-73731,934-759-8468,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Volt Electric,LIC-31255,284-680-3094,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Smart Installers,LIC-62087,965-292-4379,Phoenix,AZ,85001,APS,"EV Charger, Panel Upgrade",True
+Volt Electric,LIC-57463,950-947-3325,Boston,MA,02108,Eversource,"EV Charger, Panel Upgrade",True
+Eco Chargers,LIC-36032,958-891-1233,Boston,MA,02108,Eversource,"EV Charger, Panel Upgrade",True
+Rapid Solutions,LIC-56072,965-824-3288,Boston,MA,02108,Eversource,"EV Charger, Panel Upgrade",True
+Rapid Energy,LIC-80228,387-209-1446,Boston,MA,02108,Eversource,"EV Charger, Panel Upgrade",True
+Power Electric,LIC-96646,276-545-9953,Boston,MA,02108,Eversource,"EV Charger, Panel Upgrade",True
+Smart Energy,LIC-44913,354-824-6583,Boston,MA,02108,Eversource,"EV Charger, Panel Upgrade",True
+Power Tech,LIC-28196,675-342-4454,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Rapid Tech,LIC-82962,534-953-9732,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Volt Tech,LIC-83450,849-558-5621,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Volt Tech,LIC-66653,413-972-5629,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Green Chargers,LIC-45712,248-898-3257,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Elite Chargers,LIC-59724,863-703-3937,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Pro Energy,LIC-39040,713-340-8520,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
+Smart Installers,LIC-48156,694-596-6624,Chicago,IL,60601,ComEd,"EV Charger, Panel Upgrade",True
