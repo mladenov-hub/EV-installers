@@ -100,26 +100,36 @@ export default async function CityPage({ params }: PageProps) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!supabaseUrl || !supabaseKey) {
-        notFound();
-    }
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Graceful fallback if DB is not connected
+    const supabase = (supabaseUrl && supabaseKey) 
+        ? createClient(supabaseUrl, supabaseKey)
+        : null;
 
     // 1. Get Content (SEO)
-    const { data: content } = await supabase
-        .from('city_content')
-        .select('*')
-        .eq('city', decodedCity)
-        .eq('state', decodedState)
-        .single();
+    let content = null;
+    if (supabase) {
+        const { data } = await supabase
+            .from('city_content')
+            .select('*')
+            .eq('city', decodedCity)
+            .eq('state', decodedState)
+            .single();
+        content = data;
+    }
 
     // 2. Get Installers (for the list)
-    const { data: installers, count } = await supabase
-        .from('installers')
-        .select('*', { count: 'exact' })
-        .eq('city', decodedCity)
-        .eq('state', decodedState);
+    let installers: any[] | null = [];
+    let count = 0;
+    
+    if (supabase) {
+        const { data: installerData, count: installerCount } = await supabase
+            .from('installers')
+            .select('*', { count: 'exact' })
+            .eq('city', decodedCity)
+            .eq('state', decodedState);
+        installers = installerData;
+        count = installerCount || 0;
+    }
 
     const installerCount = count || 0;
     const startingPrice = 450;
