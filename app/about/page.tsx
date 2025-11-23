@@ -11,7 +11,7 @@ export default function AboutPage() {
                         We are building the largest verified network of EV charger installers in the United States.
                         Our mission is to make switching to electric vehicles as seamless as possible by removing the
                         headache of finding a qualified electrician.
-
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
