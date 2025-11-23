@@ -8,7 +8,7 @@ export function isValidCronRequest(request: NextRequest): boolean {
     if (authHeader === `Bearer ${process.env.CRON_SECRET}`) {
         return true;
     }
-    
+
     // Allow localhost for testing if strictly necessary, but prefer secret
     // Also allow Vercel's internal signature if needed, but Bearer is standard for user-defined crons
     return false;
@@ -18,7 +18,7 @@ export function isValidCronRequest(request: NextRequest): boolean {
 export async function logAgentAction(
     agentName: string,
     actionType: string,
-    status: 'success' | 'error' | 'warning',
+    status: 'success' | 'error' | 'warning' | 'info',
     details: any
 ) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
