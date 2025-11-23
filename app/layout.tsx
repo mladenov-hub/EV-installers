@@ -14,14 +14,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EV Charger Installers - Find Local Pros Near You | Antigravity",
+  title: "EV Charger Installers - Find Local Pros Near You",
   description: "Compare quotes from licensed electricians for EV charger installation. Get matched with local pros, read reviews, and save on your Level 2 home charging station.",
   keywords: "EV charger installation, electric vehicle charging, home charging station, licensed electrician, tesla wall connector installation",
   openGraph: {
     title: "EV Charger Installers - Find Local Pros",
     description: "Compare quotes from licensed electricians for EV charger installation.",
     type: "website",
-    siteName: "Antigravity EV Installers",
+    siteName: "EV Installers",
     locale: "en_US",
   },
 };

@@ -6,10 +6,12 @@ export default function AboutPage() {
         <div className="min-h-screen bg-slate-50 py-20">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200 text-center mb-12">
-                    <h1 className="text-4xl font-bold text-slate-900 mb-6">About Antigravity</h1>
-                    <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                        Accelerating the transition to electric vehicles by making home charging installation simple, transparent, and accessible.
-                    </p>
+                    <h1 className="text-4xl font-bold text-slate-900 mb-6">About EV Installers</h1>
+                    <p className="text-lg text-slate-600 mb-6">
+                        We are building the largest verified network of EV charger installers in the United States.
+                        Our mission is to make switching to electric vehicles as seamless as possible by removing the
+                        headache of finding a qualified electrician.
+
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">

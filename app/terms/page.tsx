@@ -11,13 +11,13 @@ export default function TermsOfService() {
 
                     <h3>1. Acceptance of Terms</h3>
                     <p>
-                        By accessing or using the Antigravity EV Installers website, you agree to be bound by these Terms of Service.
+                        By accessing or using the EV Installers website, you agree to be bound by these Terms of Service.
                         If you do not agree to these terms, please do not use our services.
                     </p>
 
                     <h3>2. Description of Service</h3>
                     <p>
-                        Antigravity EV Installers is a directory and lead generation service. We connect homeowners with
+                        EV Installers is a directory and lead generation service. We connect homeowners with
                         independent electricians and installation companies. We do not perform installations ourselves,
                         nor do we employ the installers listed on our site.
                     </p>
@@ -37,7 +37,7 @@ export default function TermsOfService() {
 
                     <h3>5. Limitation of Liability</h3>
                     <p>
-                        To the fullest extent permitted by law, Antigravity EV Installers shall not be liable for any
+                        To the fullest extent permitted by law, EV Installers shall not be liable for any
                         indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.
                     </p>
 

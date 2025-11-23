@@ -11,7 +11,7 @@ export default function PrivacyPolicy() {
 
                     <h3>1. Introduction</h3>
                     <p>
-                        Welcome to Antigravity EV Installers ("we," "our," or "us"). We are committed to protecting your privacy
+                        Welcome to EV Installers ("we," "our," or "us"). We are committed to protecting your privacy
                         and ensuring you have a positive experience on our website. This Privacy Policy explains how we collect,
                         use, and share information when you visit our site to find EV charger installers.
                     </p>
@@ -55,7 +55,7 @@ export default function PrivacyPolicy() {
 
                     <h3>6. Contact Us</h3>
                     <p>
-                        If you have any questions about this Privacy Policy, please contact us at support@antigravity.com.
+                        If you have any questions about this Privacy Policy, please contact us at support@evinstallers.com.
                     </p>
                 </div>
             </div>
