@@ -12,6 +12,10 @@
         {
             "path": "/api/cron/operator",
             "schedule": "0 3 * * 0"
+        },
+        {
+            "path": "/api/cron/google-places",
+            "schedule": "0 2 * * *"
         }
     ]
 }

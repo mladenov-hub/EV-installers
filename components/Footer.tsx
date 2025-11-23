@@ -20,6 +20,7 @@ export default function Footer() {
                     <h3 className="text-white font-bold mb-4">Platform</h3>
                     <ul className="space-y-2 text-sm">
                         <li><Link href="/" className="hover:text-white transition-colors">Find Installers</Link></li>
+                        <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
                         <li><Link href="/admin/dashboard" className="hover:text-white transition-colors">Installer Login</Link></li>
                         <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
                     </ul>

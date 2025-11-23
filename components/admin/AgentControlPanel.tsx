@@ -18,6 +18,7 @@ export default function AgentControlPanel() {
         { id: 'promoter', name: 'The Promoter', role: 'Outreach & Marketing', model: 'DeepSeek-V3', status: 'idle', endpoint: '/api/cron/promoter' },
         { id: 'auditor', name: 'The Auditor', role: 'QA & SEO', model: 'Gemini 2.0 Flash', status: 'idle', endpoint: '/api/cron/auditor' },
         { id: 'operator', name: 'The Operator', role: 'Data Integrity', model: 'DeepSeek-R1', status: 'idle', endpoint: '/api/cron/operator' },
+        { id: 'google-places', name: 'Google Places', role: 'Real Data Fetcher', model: 'Google Places API', status: 'idle', endpoint: '/api/cron/google-places' },
         // Placeholders for others not yet migrated to Cron
         { id: 'strategist', name: 'The Strategist', role: 'Content Creator', model: 'Gemini 2.0 Flash', status: 'idle' },
         { id: 'overseer', name: 'The Overseer', role: 'Project Manager', model: 'Claude 3.5 Sonnet', status: 'idle' },

@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import GetQuoteForm from '@/components/GetQuoteForm';
 import StickyCTA from '@/components/StickyCTA';
 import AffiliateProduct from '@/components/AffiliateProduct';
-import { MapPin } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
 // The Architect (Claude 4.5 Sonnet)
@@ -107,14 +107,14 @@ export default async function CityPage({ params }: PageProps) {
     // Use formatted city name for Display (UI)
     const formattedCity = formatCityName(city);
     // Use raw slug processing for DB (assuming DB has spaces, e.g. "San Francisco")
-    const dbCityQuery = decodeURIComponent(city).replace(/-/g, ' '); 
+    const dbCityQuery = decodeURIComponent(city).replace(/-/g, ' ');
     const decodedState = state.toUpperCase();
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     // Graceful fallback if DB is not connected
-    const supabase = (supabaseUrl && supabaseKey) 
+    const supabase = (supabaseUrl && supabaseKey)
         ? createClient(supabaseUrl, supabaseKey)
         : null;
 
@@ -133,13 +133,22 @@ export default async function CityPage({ params }: PageProps) {
     // 2. Get Installers (for the list)
     let installers: any[] | null = [];
     let count = 0;
-    
+
     if (supabase) {
-        const { data: installerData, count: installerCount } = await supabase
+        console.log(`🔍 Querying DB for City: "${dbCityQuery}", State: "${decodedState}"`);
+
+        const { data: installerData, count: installerCount, error } = await supabase
             .from('installers')
             .select('*', { count: 'exact' })
             .ilike('city', dbCityQuery) // Relaxed matching
-            .eq('state', decodedState);
+            .ilike('state', decodedState); // Changed from eq to ilike to match getCityData logic
+
+        if (error) {
+            console.error('❌ Supabase Query Error:', error);
+        } else {
+            console.log(`✅ Found ${installerCount} installers`);
+        }
+
         installers = installerData;
         count = installerCount || 0;
     }
@@ -189,6 +198,16 @@ export default async function CityPage({ params }: PageProps) {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <h3 className="text-xl font-bold text-slate-900">{installer.business_name}</h3>
+
+                                    {/* Rating Badge */}
+                                    {installer.rating > 0 && (
+                                        <div className="flex items-center gap-1 mt-1 text-amber-500">
+                                            <Star className="w-4 h-4 fill-current" />
+                                            <span className="font-bold text-sm">{installer.rating}</span>
+                                            <span className="text-slate-400 text-xs">({installer.review_count} reviews)</span>
+                                        </div>
+                                    )}
+
                                     <div className="flex items-center gap-2 mt-2 text-slate-600">
                                         <MapPin className="w-4 h-4" />
                                         <span>{installer.city}, {installer.state}</span>
@@ -197,10 +216,21 @@ export default async function CityPage({ params }: PageProps) {
                                         <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Level 2 Charging</span>
                                         <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Tesla Wall Connector</span>
                                     </div>
+
+                                    <div className="mt-4 flex gap-4 text-sm">
+                                        {installer.website && (
+                                            <a href={installer.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
+                                                Visit Website
+                                            </a>
+                                        )}
+                                        <span className="text-slate-500">{installer.phone}</span>
+                                    </div>
                                 </div>
                                 <div className="text-right">
                                     <div className="text-sm text-slate-500">Starting at</div>
-                                    <div className="text-2xl font-bold text-slate-900">${startingPrice}</div>
+                                    <div className="text-2xl font-bold text-slate-900">
+                                        {installer.starting_price ? `$${installer.starting_price}` : 'Contact for Quote'}
+                                    </div>
                                 </div>
                             </div>
                         </div>

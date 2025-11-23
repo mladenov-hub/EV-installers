@@ -1,11 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 import csv from 'csv-parser';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
 // The Operator (DeepSeek-R1) -> Handover to Architect
-// Task: Normalize data and prepare for Supabase (Simulated)
+// Task: Normalize data and prepare for Supabase (Real Data)
 
-const DATA_FILE = path.join(process.cwd(), 'data', 'installers.csv');
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
+
+const DATA_FILE = path.join(process.cwd(), 'data', 'real_installers_la.csv');
 
 interface Installer {
     business_name: string;
@@ -17,16 +22,28 @@ interface Installer {
     utility_provider: string;
     services: string;
     verified: string; // CSV reads as string
+    website?: string;
+    starting_price?: string;
 }
 
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+    console.error('❌ Supabase credentials missing in .env.local');
+    process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 async function seedInstallers() {
-    console.log('🌱 Seeding Process Initiated...');
+    console.log('🌱 Seeding Process Initiated (Real Data)...');
     console.log(`📂 Reading data from: ${DATA_FILE}`);
 
     const installers: Installer[] = [];
 
     if (!fs.existsSync(DATA_FILE)) {
-        console.error('❌ Error: Data file not found. Run the scraper first.');
+        console.error('❌ Error: Data file not found.');
         return;
     }
 
@@ -44,22 +61,6 @@ async function seedInstallers() {
     await normalizeAndValidate(installers);
 }
 
-import { createClient } from '@supabase/supabase-js';
-import dotenv from 'dotenv';
-
-// Load environment variables from .env.local
-dotenv.config({ path: '.env.local' });
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ Supabase credentials missing in .env.local');
-    process.exit(1);
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 async function normalizeAndValidate(data: Installer[]) {
     console.log('🧹 Normalizing data...');
 
@@ -75,10 +76,27 @@ async function normalizeAndValidate(data: Installer[]) {
         zip_code: record.zip_code,
         utility_provider: record.utility_provider,
         services: record.services,
-        verified: record.verified === 'True' || record.verified === 'true'
+        verified: record.verified === 'True' || record.verified === 'true',
+        website: record.website || null,
+        starting_price: record.starting_price ? parseFloat(record.starting_price) : null
     }));
 
     console.log(`✅ Validated ${validRecords.length} records.`);
+
+    // Clean up existing data for this city to avoid duplicates
+    if (validRecords.length > 0) {
+        const city = validRecords[0].city;
+        console.log(`🗑️  Cleaning up existing records for ${city}...`);
+        const { error: deleteError } = await supabase
+            .from('installers')
+            .delete()
+            .eq('city', city);
+
+        if (deleteError) {
+            console.error('Error deleting old records:', deleteError);
+        }
+    }
+
     console.log('🔌 Connecting to Supabase...');
 
     const { error } = await supabase.from('installers').insert(validRecords);
@@ -86,7 +104,7 @@ async function normalizeAndValidate(data: Installer[]) {
     if (error) {
         console.error('❌ Error inserting data:', error);
     } else {
-        console.log('🚀 Success! Data inserted into Supabase.');
+        console.log('🚀 Success! Real data inserted into Supabase.');
     }
 }
 

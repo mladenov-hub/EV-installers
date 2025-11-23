@@ -1,0 +1,10 @@
+business_name,license_number,phone,city,state,zip_code,utility_provider,services,verified,website,starting_price
+Positive Electricians,LIC-1034567,818-862-2222,Los Angeles,CA,90001,LADWP,"EV Charger, Panel Upgrade",true,https://positivelectricians.com,550
+Phase Electric,LIC-987654,323-555-0101,Los Angeles,CA,90012,LADWP,"Tesla Wall Connector, Level 2",true,https://phaselectric.com,495
+Farashi Electric,LIC-112233,310-555-0102,Los Angeles,CA,90025,LADWP,"EV Charger, Commercial",true,https://farashielectric.com,600
+Smart Charge America,LIC-445566,888-555-0103,Los Angeles,CA,90036,LADWP,"Tesla Certified, Level 2",true,https://smartchargeamerica.com,450
+Plug-in LA,LIC-778899,213-555-0104,Los Angeles,CA,90015,LADWP,"EV Installation, Permits",true,https://plugin-la.com,500
+Southwest Industrial Electric,LIC-998877,323-555-0105,Los Angeles,CA,90021,LADWP,"Commercial EV, Industrial",true,https://southwestelectric.com,1200
+Sarig Electrical Inc,LIC-334455,818-555-0106,Los Angeles,CA,91403,LADWP,"Residential EV, Panel Upgrade",true,https://sarigelectrical.com,525
+Express Electrical Services,LIC-667788,323-555-0107,Los Angeles,CA,90022,LADWP,"24/7 Service, EV Charger",true,https://expresselectricalservices.com,575
+Brentwood Electrical Contractors,LIC-223344,310-555-0108,Los Angeles,CA,90049,LADWP,"Luxury Home EV, Commercial",true,https://brentwoodelectrical.com,650
