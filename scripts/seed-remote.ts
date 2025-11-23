@@ -52,7 +52,7 @@ async function seedRemote() {
     }));
 
     // Insert
-    const { error, count } = await supabase.from('installers').insert(installers).select('*', { count: 'exact' });
+    const { error } = await supabase.from('installers').insert(installers).select();
 
     if (error) {
         console.error("❌ Supabase Insert Error:", error);
