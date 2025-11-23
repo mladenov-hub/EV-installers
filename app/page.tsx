@@ -20,12 +20,13 @@ export default function Home() {
           priority
         />
         
-        {/* Gradient Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-transparent" />
+        {/* Gradient Overlay for Text Readability - Adjusted for Right-Side Text */}
+        <div className="absolute inset-0 bg-gradient-to-l from-slate-900/90 via-slate-900/60 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 lg:px-12">
-          <div className="max-w-4xl space-y-8 animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-500/20 border border-blue-400/30 backdrop-blur-md text-blue-100 text-sm font-medium">
+          <div className="w-full max-w-2xl md:ml-auto md:mr-12 space-y-8 animate-fade-in-up text-right md:text-left">
+            {/* Trust Badge */}
+            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-500/20 border border-blue-400/30 backdrop-blur-md text-blue-100 text-sm font-medium ml-auto md:ml-0">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -40,11 +41,11 @@ export default function Home() {
               </span>
             </h1>
             
-            <p className="text-xl text-slate-200 max-w-2xl leading-relaxed">
+            <p className="text-xl text-slate-200 leading-relaxed">
               Stop searching. Start charging. Find top-rated, licensed electricians to install your Level 2 charger today. 
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-end md:justify-start">
               <Link
                 href="#locations"
                 className="bg-blue-600 hover:bg-blue-500 text-white text-lg font-semibold py-4 px-8 rounded-full transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-blue-600/25 flex items-center justify-center gap-2"
@@ -59,7 +60,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="flex items-center gap-6 pt-4 text-sm font-medium text-slate-300">
+            <div className="flex items-center gap-6 pt-4 text-sm font-medium text-slate-300 justify-end md:justify-start">
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-blue-400" />
                 Verified Licenses

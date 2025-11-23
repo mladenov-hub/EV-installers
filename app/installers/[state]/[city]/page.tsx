@@ -16,6 +16,14 @@ interface PageProps {
     }>;
 }
 
+// Helper to format city names (e.g., "san-francisco" -> "San Francisco")
+function formatCityName(slug: string): string {
+    return decodeURIComponent(slug)
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 // Real Data Fetcher
 async function getCityData(state: string, city: string) {
     const decodedCity = decodeURIComponent(city).replace(/-/g, ' ');
@@ -65,6 +73,8 @@ async function getCityData(state: string, city: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { state, city } = await params;
     const data = await getCityData(state, city);
+    const formattedCity = formatCityName(city);
+    const formattedState = state.toUpperCase();
 
     // Fetch SEO Content
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -72,8 +82,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!supabaseUrl || !supabaseKey) {
         return {
-            title: `EV Charger Installers in ${data.city}, ${data.state}`,
-            description: `Find verified EV charger installers in ${data.city}.`
+            title: `EV Charger Installers in ${formattedCity}, ${formattedState}`,
+            description: `Find verified EV charger installers in ${formattedCity}.`
         };
     }
 
@@ -82,19 +92,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const { data: content } = await supabase
         .from('city_content')
         .select('meta_title, meta_description')
-        .eq('city', data.city)
-        .eq('state', data.state)
+        .eq('city', formattedCity)
+        .eq('state', formattedState)
         .single();
 
     return {
-        title: content?.meta_title || `Top ${data.installerCount} EV Charger Installers in ${data.city}, ${data.state} | 2025 Guide`,
-        description: content?.meta_description || `Compare the best rated EV charger installers in ${data.city}, ${data.state}. Average cost: $${data.avgPrice}. Get a free quote today.`,
+        title: content?.meta_title || `Top ${data.installerCount} EV Charger Installers in ${formattedCity}, ${formattedState} | 2025 Guide`,
+        description: content?.meta_description || `Compare the best rated EV charger installers in ${formattedCity}, ${formattedState}. Average cost: $${data.avgPrice}. Get a free quote today.`,
     };
 }
 
 export default async function CityPage({ params }: PageProps) {
     const { state, city } = await params;
-    const decodedCity = decodeURIComponent(city).replace(/-/g, ' ');
+    // Use formatted city name for Display (UI)
+    const formattedCity = formatCityName(city);
+    // Use raw slug processing for DB (assuming DB has spaces, e.g. "San Francisco")
+    const dbCityQuery = decodeURIComponent(city).replace(/-/g, ' '); 
     const decodedState = state.toUpperCase();
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -111,7 +124,7 @@ export default async function CityPage({ params }: PageProps) {
         const { data } = await supabase
             .from('city_content')
             .select('*')
-            .eq('city', decodedCity)
+            .ilike('city', dbCityQuery) // Relaxed matching
             .eq('state', decodedState)
             .single();
         content = data;
@@ -125,7 +138,7 @@ export default async function CityPage({ params }: PageProps) {
         const { data: installerData, count: installerCount } = await supabase
             .from('installers')
             .select('*', { count: 'exact' })
-            .eq('city', decodedCity)
+            .ilike('city', dbCityQuery) // Relaxed matching
             .eq('state', decodedState);
         installers = installerData;
         count = installerCount || 0;
@@ -140,10 +153,10 @@ export default async function CityPage({ params }: PageProps) {
             <div className="bg-slate-900 text-white py-20">
                 <div className="max-w-7xl mx-auto px-4 text-center">
                     <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                        {content?.meta_title || `Top Rated EV Charger Installers in ${decodedCity}, ${decodedState}`}
+                        {content?.meta_title || `Top Rated EV Charger Installers in ${formattedCity}, ${decodedState}`}
                     </h1>
                     <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
-                        {content?.intro_text || `Find verified local electricians in ${decodedCity} to install your Level 2 home charging station. Get quotes, compare prices, and charge faster.`}
+                        {content?.intro_text || `Find verified local electricians in ${formattedCity} to install your Level 2 home charging station. Get quotes, compare prices, and charge faster.`}
                     </p>
 
                     <div className="flex justify-center gap-8 text-sm font-medium text-slate-400">
@@ -197,7 +210,7 @@ export default async function CityPage({ params }: PageProps) {
                 {/* Sidebar - Lead Form & Affiliates */}
                 <div className="lg:col-span-1">
                     <div className="sticky top-8">
-                        <GetQuoteForm city={decodedCity} state={decodedState} />
+                        <GetQuoteForm city={formattedCity} state={decodedState} />
 
                         <div className="mt-6 bg-blue-50 p-6 rounded-xl border border-blue-100">
                             <h3 className="font-bold text-blue-900 mb-2">Why use our platform?</h3>
