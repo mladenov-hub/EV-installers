@@ -57,9 +57,9 @@ async function fetchInstallers(city: string, state: string) {
         const electricians = places.filter((place: any) => {
             const types = place.types || [];
             return types.includes('electrician') ||
-                   types.includes('electrical_contractor') ||
-                   types.includes('contractor') ||
-                   !types.includes('electric_vehicle_charging_station');
+                types.includes('electrical_contractor') ||
+                types.includes('contractor') ||
+                !types.includes('electric_vehicle_charging_station');
         });
 
         return electricians.map((place: any) => ({
@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
                     const existingPlaceIds = new Set(existingData?.map((d: any) => d.google_place_id) || []);
 
                     // Filter out duplicates
-                    const newInstallers = installers.filter(installer =>
+                    const newInstallers = installers.filter((installer: any) =>
                         !existingPlaceIds.has(installer.google_place_id)
                     );
 
