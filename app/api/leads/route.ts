@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import nodemailer from 'nodemailer';
+import emailService from '@/lib/email-service';
 
 const leadSchema = z.object({
     name: z.string().min(2, "Name is too short"),
@@ -12,6 +12,10 @@ const leadSchema = z.object({
     vehicle: z.string().optional(),
     city: z.string().optional(),
     state: z.string().optional(),
+    timeline: z.enum(['immediate', 'within_month', 'within_3months', 'planning']).optional(),
+    propertyType: z.enum(['single_family', 'multi_family', 'commercial']).optional(),
+    chargerType: z.enum(['level2', 'tesla', 'both', 'unsure']).optional(),
+    electricalPanelUpgrade: z.boolean().optional(),
 });
 
 export async function POST(request: Request) {
@@ -44,66 +48,116 @@ export async function POST(request: Request) {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // Insert into 'leads' table
-        const { error } = await supabase
+        // Get user's IP and user agent for tracking
+        const forwardedFor = request.headers.get('x-forwarded-for');
+        const ip = forwardedFor ? forwardedFor.split(',')[0] : request.headers.get('x-real-ip');
+        const userAgent = request.headers.get('user-agent');
+
+        // Insert into new 'leads' table with enhanced schema
+        const { data: leadData, error: leadError } = await supabase
             .from('leads')
             .insert([{
-                name: data.name,
+                full_name: data.name,
                 email: data.email,
                 phone: data.phone || null,
                 zip_code: data.zipCode,
-                project_type: data.projectType || 'install',
-                vehicle: data.vehicle || null,
                 city: data.city || null,
                 state: data.state || null,
-                created_at: new Date().toISOString(),
-                status: 'new'
-            }]);
+                project_timeline: data.timeline || 'planning',
+                property_type: data.propertyType || 'single_family',
+                charger_type: data.chargerType || 'unsure',
+                electrical_panel_upgrade: data.electricalPanelUpgrade || false,
+                ip_address: ip || null,
+                user_agent: userAgent || null,
+                source: 'website',
+                status: 'new',
+                created_at: new Date().toISOString()
+            }])
+            .select()
+            .single();
 
-        if (error) {
-            console.error('Supabase error:', error);
+        if (leadError) {
+            console.error('Supabase error:', leadError);
             return NextResponse.json(
                 { error: 'Database Error: Failed to save lead.' },
                 { status: 500 }
             );
         }
 
-        // Send Email Notification (Best Effort)
-        // We do not await this to ensure the user gets a fast response.
-        // In Vercel Serverless, we might need to await if the function freezes immediately, 
-        // but typically for a simple SMTP call, a short await is fine, or we accept the risk.
-        const smtpUser = process.env.SMTP_USER;
-        const smtpPass = process.env.SMTP_PASS;
+        // Find and notify matching installers
+        if (data.city && data.state && leadData) {
+            // Get matching installers from the database
+            const { data: installers } = await supabase
+                .from('installers')
+                .select('id, business_name, email, phone')
+                .ilike('city', data.city)
+                .eq('state', data.state.toUpperCase())
+                .eq('active', true)
+                .eq('verified', true)
+                .order('featured', { ascending: false })
+                .order('rating', { ascending: false })
+                .limit(3);
 
-        if (smtpUser && smtpPass) {
-            // Wrap in a promise that we don't strictly block on for too long
-            const sendEmail = async () => {
-                try {
-                    const transporter = nodemailer.createTransport({
-                        host: 'smtp.gmail.com',
-                        port: 587,
-                        secure: false, // use STARTTLS
-                        auth: { user: smtpUser, pass: smtpPass },
-                        tls: { rejectUnauthorized: false }
-                    });
+            if (installers && installers.length > 0) {
+                // Update lead with assigned installers
+                const installerIds = installers.map(i => i.id);
+                await supabase
+                    .from('leads')
+                    .update({ assigned_to: installerIds })
+                    .eq('id', leadData.id);
 
-                    await transporter.sendMail({
-                        from: `"EV Lead Bot" <${smtpUser}>`,
-                        to: smtpUser, // Send to admin (self)
-                        subject: `🔌 New Lead: ${data.name} in ${data.zipCode}`,
-                        text: `New Lead Captured!\n\nName: ${data.name}\nEmail: ${data.email}\nPhone: ${data.phone || 'N/A'}\nZip: ${data.zipCode}\nVehicle: ${data.vehicle || 'N/A'}`
-                    });
-                    console.log(`📧 Notification email sent to ${smtpUser}`);
-                } catch (emailError) {
-                    console.error('Failed to send email notification:', emailError);
+                // Send notification emails to installers
+                for (const installer of installers) {
+                    if (installer.email) {
+                        try {
+                            await emailService.send({
+                                to: installer.email,
+                                template: 'lead_notification',
+                                data: {
+                                    leadName: data.name,
+                                    leadEmail: data.email,
+                                    leadPhone: data.phone,
+                                    city: data.city,
+                                    state: data.state,
+                                    timeline: data.timeline,
+                                    propertyType: data.propertyType,
+                                    chargerType: data.chargerType,
+                                    installerName: installer.business_name
+                                }
+                            });
+                            console.log(`Lead notification sent to ${installer.business_name}`);
+                        } catch (emailError) {
+                            console.error(`Failed to notify installer ${installer.business_name}:`, emailError);
+                        }
+                    }
                 }
-            };
-            
-            // Execute email send but catch any errors so they don't affect the response
-            await sendEmail(); 
+            }
         }
 
-        return NextResponse.json({ success: true });
+        // Send confirmation email to the lead
+        try {
+            await emailService.send({
+                to: data.email,
+                template: 'quote_confirmation',
+                data: {
+                    name: data.name,
+                    city: data.city || 'your area',
+                    state: data.state || '',
+                    timeline: data.timeline,
+                    propertyType: data.propertyType,
+                    chargerType: data.chargerType
+                }
+            });
+            console.log(`Confirmation email sent to ${data.email}`);
+        } catch (emailError) {
+            console.error('Failed to send confirmation email:', emailError);
+            // Don't fail the request if email fails
+        }
+
+        return NextResponse.json({
+            success: true,
+            message: 'Your quote request has been submitted successfully!'
+        });
 
     } catch (error) {
         console.error('Lead capture error:', error);

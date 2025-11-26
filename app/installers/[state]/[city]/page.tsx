@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import GetQuoteForm from '@/components/GetQuoteForm';
 import StickyCTA from '@/components/StickyCTA';
 import AffiliateProduct from '@/components/AffiliateProduct';
+import GoogleMap from '@/components/GoogleMap';
 import { MapPin, Star } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -194,45 +195,111 @@ export default async function CityPage({ params }: PageProps) {
                     </div>
 
                     {installers?.map((installer: any) => (
-                        <div key={installer.id} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <h3 className="text-xl font-bold text-slate-900">{installer.business_name}</h3>
+                        <div key={installer.id} className="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                            <div className="p-6">
+                                <div className="flex justify-between items-start gap-4">
+                                    <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                    {installer.business_name}
+                                                </h3>
 
-                                    {/* Rating Badge */}
-                                    {installer.rating > 0 && (
-                                        <div className="flex items-center gap-1 mt-1 text-amber-500">
-                                            <Star className="w-4 h-4 fill-current" />
-                                            <span className="font-bold text-sm">{installer.rating}</span>
-                                            <span className="text-slate-400 text-xs">({installer.review_count} reviews)</span>
+                                                {/* Verified Badge */}
+                                                {installer.verified && (
+                                                    <div className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full">
+                                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                                        </svg>
+                                                        Verified Business
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Price Badge */}
+                                            <div className="text-right ml-4">
+                                                <div className="text-xs text-slate-500 uppercase tracking-wide">Starting at</div>
+                                                <div className="text-2xl font-bold text-slate-900">
+                                                    {installer.starting_price ? `$${installer.starting_price}` : '$450+'}
+                                                </div>
+                                                <div className="text-xs text-slate-500">Installation only</div>
+                                            </div>
                                         </div>
-                                    )}
 
-                                    <div className="flex items-center gap-2 mt-2 text-slate-600">
-                                        <MapPin className="w-4 h-4" />
-                                        <span>{installer.city}, {installer.state}</span>
-                                    </div>
-                                    <div className="flex gap-2 mt-4">
-                                        <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Level 2 Charging</span>
-                                        <span className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full">Tesla Wall Connector</span>
-                                    </div>
-
-                                    <div className="mt-4 flex gap-4 text-sm">
-                                        {installer.website && (
-                                            <a href={installer.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
-                                                Visit Website
-                                            </a>
+                                        {/* Rating */}
+                                        {installer.rating && installer.rating > 0 && (
+                                            <div className="flex items-center gap-3 mt-3">
+                                                <div className="flex items-center gap-1">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <Star
+                                                            key={i}
+                                                            className={`w-4 h-4 ${i < Math.floor(installer.rating) ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200'}`}
+                                                        />
+                                                    ))}
+                                                </div>
+                                                <span className="font-semibold text-sm">{installer.rating.toFixed(1)}</span>
+                                                <span className="text-slate-500 text-sm">({installer.review_count || 0} reviews)</span>
+                                            </div>
                                         )}
-                                        <span className="text-slate-500">{installer.phone}</span>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <div className="text-sm text-slate-500">Starting at</div>
-                                    <div className="text-2xl font-bold text-slate-900">
-                                        {installer.starting_price ? `$${installer.starting_price}` : 'Contact for Quote'}
+
+                                        {/* Location & Contact */}
+                                        <div className="mt-4 space-y-2">
+                                            <div className="flex items-center gap-2 text-slate-600">
+                                                <MapPin className="w-4 h-4 flex-shrink-0" />
+                                                <span className="text-sm">{installer.address || `${installer.city}, ${installer.state} ${installer.zip_code || ''}`}</span>
+                                            </div>
+                                            {installer.phone && (
+                                                <div className="flex items-center gap-2">
+                                                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                    </svg>
+                                                    <a href={`tel:${installer.phone}`} className="text-sm text-blue-600 hover:underline">
+                                                        {installer.phone}
+                                                    </a>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Services */}
+                                        <div className="flex flex-wrap gap-2 mt-4">
+                                            <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">Level 2 Charging</span>
+                                            <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">Tesla Wall Connector</span>
+                                            {installer.services && installer.services.includes('Panel') && (
+                                                <span className="px-3 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-full">Panel Upgrades</span>
+                                            )}
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div className="flex gap-3 mt-5">
+                                            <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm">
+                                                Get Quote
+                                            </button>
+                                            {installer.website && (
+                                                <a
+                                                    href={installer.website}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="px-4 py-2 border border-slate-300 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm text-slate-700"
+                                                >
+                                                    Visit Website
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Google Map Section */}
+                            {(installer.google_place_id || installer.address) && (
+                                <div className="border-t border-slate-200 bg-slate-50">
+                                    <GoogleMap
+                                        placeId={installer.google_place_id}
+                                        businessName={installer.business_name}
+                                        address={installer.address || `${installer.city}, ${installer.state}`}
+                                        phone={installer.phone}
+                                    />
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

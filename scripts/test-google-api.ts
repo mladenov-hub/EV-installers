@@ -34,7 +34,7 @@ async function testGooglePlacesAPI() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Goog-Api-Key': GOOGLE_API_KEY,
+                    'X-Goog-Api-Key': GOOGLE_API_KEY as string,
                     'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.rating,places.types'
                 },
                 body: JSON.stringify({

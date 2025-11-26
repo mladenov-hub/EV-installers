@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:google": "npx tsx scripts/test-google-api.ts",
+    "test:systems": "npx tsx scripts/test-all-systems.ts",
+    "test:all": "npm run test:systems"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.83.0",
