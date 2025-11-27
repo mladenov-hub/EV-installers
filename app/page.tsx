@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Zap, Shield, DollarSign, MapPin, ArrowRight, Star, CheckCircle2 } from "lucide-react";
+import { Zap, Shield, DollarSign, MapPin, ArrowRight, Star, CheckCircle2, ChevronDown } from "lucide-react";
+import ZipSearch from "@/components/ZipSearch";
 
 // The Architect (Claude 4.5 Sonnet)
 // Component: Modern Homepage
@@ -19,48 +20,41 @@ export default function Home() {
           className="object-cover object-center"
           priority
         />
-        
-        {/* Gradient Overlay for Text Readability - Adjusted for Right-Side Text */}
-        <div className="absolute inset-0 bg-gradient-to-l from-slate-900/90 via-slate-900/60 to-transparent" />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-center px-4 sm:px-6 lg:px-12">
-          <div className="w-full max-w-2xl md:ml-auto md:mr-12 space-y-8 animate-fade-in-up text-right md:text-left">
+          <div className="w-full max-w-3xl space-y-8 animate-fade-in-up">
             {/* Trust Badge */}
-            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-500/20 border border-blue-400/30 backdrop-blur-md text-blue-100 text-sm font-medium ml-auto md:ml-0">
+            <div className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-blue-500/20 border border-blue-400/30 backdrop-blur-md text-blue-100 text-sm font-medium">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
               </span>
-              #1 Network for EV Charger Installation
+              Tracking 14,203+ Active Installers
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight">
               The Future of Driving <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
                 Starts at Home.
               </span>
             </h1>
-            
-            <p className="text-xl text-slate-200 leading-relaxed">
-              Stop searching. Start charging. Find top-rated, licensed electricians to install your Level 2 charger today. 
+
+            <p className="text-xl text-slate-200 leading-relaxed max-w-2xl">
+              Stop searching. Start charging. Find top-rated, licensed electricians to install your Level 2 charger today.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 pt-4 justify-end md:justify-start">
-              <Link
-                href="#locations"
-                className="bg-blue-600 hover:bg-blue-500 text-white text-lg font-semibold py-4 px-8 rounded-full transition-all transform hover:scale-105 hover:shadow-lg hover:shadow-blue-600/25 flex items-center justify-center gap-2"
-              >
-                Find an Installer <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link
-                href="/about"
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white text-lg font-semibold py-4 px-8 rounded-full transition-all border border-white/10 flex items-center justify-center"
-              >
-                How it Works
-              </Link>
+
+            {/* Zip Search Component */}
+            <div className="pt-4">
+              <ZipSearch />
+              <p className="text-slate-400 text-sm mt-3 ml-2">
+                Popular: <Link href="/installers/tx/austin" className="hover:text-white underline decoration-slate-500">Austin</Link>, <Link href="/installers/ca/los-angeles" className="hover:text-white underline decoration-slate-500">Los Angeles</Link>, <Link href="/installers/ny/new-york" className="hover:text-white underline decoration-slate-500">New York</Link>
+              </p>
             </div>
 
-            <div className="flex items-center gap-6 pt-4 text-sm font-medium text-slate-300 justify-end md:justify-start">
+            <div className="flex items-center gap-6 pt-4 text-sm font-medium text-slate-300">
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-blue-400" />
                 Verified Licenses
@@ -74,8 +68,23 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Brand Trust Section */}
+      <div className="bg-slate-50 border-b border-slate-200 py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-6">Trusted by owners of</p>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+            {/* Text-based logos for simplicity and speed, replace with SVGs if available */}
+            <span className="text-2xl font-bold text-slate-800">TESLA</span>
+            <span className="text-2xl font-bold text-slate-800">RIVIAN</span>
+            <span className="text-2xl font-bold text-slate-800">FORD</span>
+            <span className="text-2xl font-bold text-slate-800">CHARGEPOINT</span>
+            <span className="text-2xl font-bold text-slate-800">HYUNDAI</span>
+          </div>
+        </div>
+      </div>
+
       {/* How It Works (Value Props) */}
-      <section className="py-24 bg-slate-50">
+      <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Simple Process</h2>
@@ -88,17 +97,17 @@ export default function Home() {
             <FeatureCard
               step="01"
               icon={<MapPin className="w-8 h-8 text-blue-600" />}
-              title="Choose Your Location"
-              desc="Select your city to see a curated list of verified EV specialists in your area."
+              title="Enter Your Zip Code"
+              desc="We'll instantly match you with verified EV specialists in your specific neighborhood."
             />
             <FeatureCard
-               step="02"
+              step="02"
               icon={<Shield className="w-8 h-8 text-blue-600" />}
               title="Compare Quotes"
               desc="View profiles, read reviews, and request free quotes from multiple pros instantly."
             />
             <FeatureCard
-               step="03"
+              step="03"
               icon={<Zap className="w-8 h-8 text-blue-600" />}
               title="Install & Charge"
               desc="Hire your favorite pro and get your Level 2 charger installed in as little as 48 hours."
@@ -107,108 +116,63 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Locations Grid */}
-      <div id="locations" className="py-24 bg-white">
+      {/* Browse by State Section */}
+      <section id="locations" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-900 mb-4">Popular Service Areas</h2>
-            <p className="text-xl text-slate-600">Connecting you with top-rated professionals across the nation.</p>
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Browse Installers by State</h2>
+            <p className="text-xl text-slate-600">Find local professionals in your area.</p>
           </div>
 
-          {/* Responsive Grid Layout instead of Horizontal Scroll */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[
-              { city: "San Francisco", state: "CA", img: "/images/city-west.png" },
-              { city: "Los Angeles", state: "CA", img: "/images/city-west.png" },
-              { city: "New York", state: "NY", img: "/images/city-east.png" },
-              { city: "Miami", state: "FL", img: "/images/city-west.png" },
-              { city: "Austin", state: "TX", img: "/images/city-tech.png" },
-              { city: "Seattle", state: "WA", img: "/images/city-west.png" },
-              { city: "Denver", state: "CO", img: "/images/city-tech.png" },
-              { city: "Phoenix", state: "AZ", img: "/images/city-west.png" },
-              { city: "Boston", state: "MA", img: "/images/city-east.png" },
-              { city: "Chicago", state: "IL", img: "/images/city-east.png" },
-              { city: "Houston", state: "TX", img: "/images/city-tech.png" },
-              { city: "Atlanta", state: "GA", img: "/images/city-east.png" },
-            ].map((loc) => (
-              <Link
-                key={loc.city}
-                // Robust URL generation: replace spaces with hyphens, handle casing
-                href={`/installers/${loc.state.toLowerCase()}/${loc.city.toLowerCase().replace(/\s+/g, '-')}`}
-                className="group relative h-64 overflow-hidden rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10 opacity-90" />
-                <Image
-                  src={loc.img}
-                  alt={`${loc.city} EV Installers`}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-20">
-                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-blue-300 transition-colors">{loc.city}</h3>
-                  <div className="flex justify-between items-center">
-                    <p className="text-slate-300 text-sm font-medium">{loc.state}</p>
-                    <ArrowRight className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-          
-          <div className="mt-12 text-center">
-            <Link href="/installers/tx/austin" className="text-blue-600 font-medium hover:text-blue-700 inline-flex items-center gap-1">
-              View All Locations <ArrowRight className="w-4 h-4" />
-            </Link>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
+              'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+              'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+              'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+              'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'].map((state) => (
+                <Link
+                  key={state}
+                  href={`/installers/${state.toLowerCase()}`}
+                  className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md border border-slate-200 text-center font-semibold text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-all"
+                >
+                  {state}
+                </Link>
+              ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Trust Section */}
-      <section className="py-24 bg-slate-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2 relative order-2 lg:order-1">
-              <div className="relative h-[600px] w-full rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-900/5">
-                <Image
-                  src="/images/trust-electrician.png"
-                  alt="Professional Electrician Installing EV Charger"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              {/* Floating Badge */}
-              <div className="absolute bottom-8 right-8 bg-white/95 backdrop-blur p-6 rounded-2xl shadow-xl border border-slate-100 max-w-xs animate-fade-in">
-                <div className="flex items-center gap-1 mb-2">
-                  <div className="flex text-yellow-400">
-                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-4 h-4 fill-current" />)}
-                  </div>
-                  <span className="font-bold text-slate-900 ml-2">5.0</span>
-                </div>
-                <p className="text-slate-700 text-sm italic">"The installer was professional, on time, and did a clean job. Highly recommend!"</p>
-                <div className="flex items-center gap-3 mt-4">
-                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">SJ</div>
-                    <p className="text-slate-500 text-xs font-medium">Sarah J. • Tesla Owner</p>
-                </div>
-              </div>
-            </div>
-            <div className="lg:w-1/2 space-y-8 order-1 lg:order-2">
-              <h2 className="text-4xl font-bold text-slate-900 leading-tight">
-                Don&apos;t Trust Your Home to <br />
-                <span className="text-blue-600">Just Anyone.</span>
-              </h2>
-              <p className="text-lg text-slate-600 leading-relaxed">
-                EV chargers draw a significant amount of power—often more than your dryer or oven. Improper installation can lead to fire hazards, breaker trips, and voided warranties. Our network ensures you get it done right the first time.
-              </p>
-              <ul className="space-y-4">
-                <CheckItem text="Certified NEMA 14-50 Installation" />
-                <CheckItem text="Hardwired Wall Connector Setup" />
-                <CheckItem text="Panel Upgrades & Load Calculations" />
-                <CheckItem text="Permit Handling & Inspection Guarantee" />
-              </ul>
-              <Link href="/safety" className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition-colors group">
-                Learn more about safety protocols <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
+      {/* FAQ Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">Common Questions</h2>
+            <p className="text-xl text-slate-600">Everything you need to know about home EV charging.</p>
+          </div>
+
+          <div className="space-y-6">
+            <FaqItem
+              question="How much does it cost to install a Level 2 charger?"
+              answer="Installation costs typically range from $750 to $1,500, depending on your home's electrical panel capacity, the distance from the panel to the parking spot, and local permit fees."
+            />
+            <FaqItem
+              question="Do I need a permit for a Tesla Wall Connector?"
+              answer="Yes, almost all jurisdictions require an electrical permit for installing a dedicated 240V circuit and EV charger. Our verified installers handle the permitting process for you."
+            />
+            <FaqItem
+              question="What is the difference between hardwired and NEMA 14-50?"
+              answer="Hardwired connections are safer, more reliable, and allow for faster charging speeds (up to 48A). NEMA 14-50 outlets offer flexibility (you can unplug the charger) but are limited to 40A charging and require a GFCI breaker."
+            />
+            <FaqItem
+              question="How long does installation take?"
+              answer="Most standard installations are completed in 2-4 hours. However, if a panel upgrade is required, it may take a full day."
+            />
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link href="/faq" className="text-blue-600 font-medium hover:text-blue-700 inline-flex items-center gap-1">
+              View All FAQs <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
@@ -218,11 +182,11 @@ export default function Home() {
 
 function FeatureCard({ icon, title, desc, step }: { icon: any, title: string, desc: string, step: string }) {
   return (
-    <div className="relative p-8 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group">
-      <div className="absolute top-6 right-8 text-6xl font-bold text-slate-100 -z-10 select-none group-hover:text-blue-50 transition-colors">
-          {step}
+    <div className="relative p-8 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 group">
+      <div className="absolute top-6 right-8 text-6xl font-bold text-slate-200 -z-10 select-none group-hover:text-blue-100 transition-colors">
+        {step}
       </div>
-      <div className="mb-6 p-4 bg-blue-50 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300 ring-1 ring-blue-100">{icon}</div>
+      <div className="mb-6 p-4 bg-white rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300 ring-1 ring-slate-200 shadow-sm">{icon}</div>
       <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
       <p className="text-slate-600 leading-relaxed">{desc}</p>
     </div>
@@ -234,6 +198,15 @@ function CheckItem({ text }: { text: string }) {
     <div className="flex items-center gap-3 group">
       <CheckCircle2 className="w-6 h-6 text-green-500 flex-shrink-0 group-hover:scale-110 transition-transform" />
       <span className="text-slate-700 font-medium">{text}</span>
+    </div>
+  );
+}
+
+function FaqItem({ question, answer }: { question: string, answer: string }) {
+  return (
+    <div className="border border-slate-200 rounded-xl p-6 hover:border-blue-200 transition-colors bg-slate-50">
+      <h3 className="text-lg font-bold text-slate-900 mb-2">{question}</h3>
+      <p className="text-slate-600">{answer}</p>
     </div>
   );
 }

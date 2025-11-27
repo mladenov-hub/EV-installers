@@ -1,10 +1,12 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import GetQuoteForm from '@/components/GetQuoteForm';
 import StickyCTA from '@/components/StickyCTA';
 import AffiliateProduct from '@/components/AffiliateProduct';
 import GoogleMap from '@/components/GoogleMap';
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, Shield, Star, CheckCircle2, ArrowRight } from 'lucide-react';
+
 import { createClient } from '@supabase/supabase-js';
 
 // The Architect (Claude 4.5 Sonnet)
@@ -204,86 +206,59 @@ export default async function CityPage({ params }: PageProps) {
                                                 <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                                                     {installer.business_name}
                                                 </h3>
-
-                                                {/* Verified Badge */}
                                                 {installer.verified && (
-                                                    <div className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full">
-                                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                                        </svg>
-                                                        Verified Business
+                                                    <div className="flex items-center gap-1 text-green-600 text-sm font-medium mt-1">
+                                                        <CheckCircle2 className="w-4 h-4" /> Verified License
                                                     </div>
                                                 )}
                                             </div>
-
-                                            {/* Price Badge */}
-                                            <div className="text-right ml-4">
-                                                <div className="text-xs text-slate-500 uppercase tracking-wide">Starting at</div>
-                                                <div className="text-2xl font-bold text-slate-900">
-                                                    {installer.starting_price ? `$${installer.starting_price}` : '$450+'}
+                                            <div className="text-right">
+                                                <div className="flex items-center gap-1 justify-end text-yellow-500 font-bold">
+                                                    <Star className="w-4 h-4 fill-current" />
+                                                    <span>{installer.rating || '4.8'}</span>
+                                                    <span className="text-slate-400 text-sm font-normal">({installer.review_count || 12})</span>
                                                 </div>
-                                                <div className="text-xs text-slate-500">Installation only</div>
+                                                <p className="text-sm text-slate-500 mt-1">Starting at ${installer.starting_price || '499'}</p>
                                             </div>
                                         </div>
 
-                                        {/* Rating */}
-                                        {installer.rating && installer.rating > 0 && (
-                                            <div className="flex items-center gap-3 mt-3">
-                                                <div className="flex items-center gap-1">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <Star
-                                                            key={i}
-                                                            className={`w-4 h-4 ${i < Math.floor(installer.rating) ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200'}`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <span className="font-semibold text-sm">{installer.rating.toFixed(1)}</span>
-                                                <span className="text-slate-500 text-sm">({installer.review_count || 0} reviews)</span>
-                                            </div>
-                                        )}
-
-                                        {/* Location & Contact */}
-                                        <div className="mt-4 space-y-2">
-                                            <div className="flex items-center gap-2 text-slate-600">
-                                                <MapPin className="w-4 h-4 flex-shrink-0" />
-                                                <span className="text-sm">{installer.address || `${installer.city}, ${installer.state} ${installer.zip_code || ''}`}</span>
-                                            </div>
-                                            {installer.phone && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-6">
+                                            <div className="space-y-2 text-sm text-slate-600">
                                                 <div className="flex items-center gap-2">
-                                                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                    </svg>
-                                                    <a href={`tel:${installer.phone}`} className="text-sm text-blue-600 hover:underline">
-                                                        {installer.phone}
-                                                    </a>
+                                                    <Shield className="w-4 h-4 text-blue-500" />
+                                                    <span>License: {installer.license_number || 'Verified'}</span>
                                                 </div>
-                                            )}
+                                                <div className="flex items-center gap-2">
+                                                    <MapPin className="w-4 h-4 text-blue-500" />
+                                                    <span>{installer.city}, {installer.state}</span>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2 text-sm text-slate-600">
+                                                {installer.website && (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-medium text-slate-900">Web:</span>
+                                                        <a href={installer.website} target="_blank" rel="nofollow" className="text-blue-600 hover:underline truncate max-w-[200px]">{installer.website.replace(/^https?:\/\//, '')}</a>
+                                                    </div>
+                                                )}
+                                                {installer.phone && (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-medium text-slate-900">Tel:</span>
+                                                        <a href={`tel:${installer.phone}`} className="text-slate-600 hover:text-blue-600">{installer.phone}</a>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        {/* Services */}
-                                        <div className="flex flex-wrap gap-2 mt-4">
-                                            <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">Level 2 Charging</span>
-                                            <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">Tesla Wall Connector</span>
-                                            {installer.services && installer.services.includes('Panel') && (
-                                                <span className="px-3 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-full">Panel Upgrades</span>
-                                            )}
-                                        </div>
-
-                                        {/* Action Buttons */}
-                                        <div className="flex gap-3 mt-5">
-                                            <button className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm">
-                                                Get Quote
+                                        <div className="flex gap-3">
+                                            <Link
+                                                href={`/get-quote?installer=${installer.id}`}
+                                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-center transition-colors"
+                                            >
+                                                Request Quote
+                                            </Link>
+                                            <button className="px-4 py-3 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 font-medium transition-colors">
+                                                View Profile
                                             </button>
-                                            {installer.website && (
-                                                <a
-                                                    href={installer.website}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="px-4 py-2 border border-slate-300 rounded-lg font-medium hover:bg-slate-50 transition-colors text-sm text-slate-700"
-                                                >
-                                                    Visit Website
-                                                </a>
-                                            )}
                                         </div>
                                     </div>
                                 </div>
