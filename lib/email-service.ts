@@ -49,18 +49,6 @@ class EmailService {
                     pass: process.env.MAILGUN_API_KEY
                 }
             });
-        } else if (process.env.AWS_SES_REGION) {
-            // Amazon SES Configuration (Alternative)
-            const aws = require('@aws-sdk/client-ses');
-            const { defaultProvider } = require('@aws-sdk/credential-provider-node');
-            const nodemailerSES = require('nodemailer-ses-transport');
-
-            this.transporter = nodemailer.createTransport({
-                SES: new aws.SES({
-                    region: process.env.AWS_SES_REGION,
-                    credentials: defaultProvider()
-                })
-            });
         } else {
             // Fallback to SMTP (for development/testing)
             // Note: Update these credentials to use professional email service
