@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Zap, Shield, DollarSign, MapPin, ArrowRight, Star, CheckCircle2, ChevronDown } from "lucide-react";
 import ZipSearch from "@/components/ZipSearch";
+import USAMap from "@/components/USAMap";
 
 // The Architect (Claude 4.5 Sonnet)
 // Component: Modern Homepage
@@ -119,25 +120,20 @@ export default function Home() {
       {/* Browse by State Section */}
       <section id="locations" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">Browse Installers by State</h2>
-            <p className="text-xl text-slate-600">Find local professionals in your area.</p>
+            <p className="text-xl text-slate-600">Select your state to find local professionals in your area.</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA',
-              'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-              'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-              'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-              'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'].map((state) => (
-                <Link
-                  key={state}
-                  href={`/installers/${state.toLowerCase()}`}
-                  className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md border border-slate-200 text-center font-semibold text-slate-700 hover:text-blue-600 hover:border-blue-300 transition-all"
-                >
-                  {state}
-                </Link>
-              ))}
+          <div className="w-full flex justify-center relative bg-white rounded-3xl shadow-sm border border-slate-200 p-4 md:p-8 overflow-hidden">
+            <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))] -z-10" />
+            <USAMap />
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-sm text-slate-500">
+              Don't see your state? <Link href="/installers" className="text-blue-600 hover:underline">View all locations</Link>
+            </p>
           </div>
         </div>
       </section>

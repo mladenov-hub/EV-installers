@@ -1,7 +1,7 @@
 # EV Installer Programmatic SEO Platform
 
 ## Project Overview
-This is a **Programmatic SEO (pSEO) platform** designed to capture organic search traffic for "EV charger installers in [City], [State]" queries. The system aggregates local installer data to generate thousands of unique landing pages, monetizing traffic through lead arbitrage (Networx/Angi) and affiliate commissions (Amazon).
+This is a **Programmatic SEO (pSEO) platform** designed to capture organic search traffic for "EV charger installers in [City], [State]" queries. The system aggregates **real-time local installer data via Google Places API** to generate thousands of unique landing pages, monetizing traffic through lead arbitrage (Networx/Angi) and affiliate commissions (Amazon).
 
 The core of the project is an **8-Agent "God Mode" Swarm**—a mix of autonomous Vercel Cron jobs and manual CLI tools that handle everything from content generation to outreach and quality assurance.
 
@@ -18,7 +18,7 @@ The system uses a specialized team of AI agents:
 
 1.  **Autonomous Agents (Vercel Cron):**
     *   **The Promoter:** Runs daily (10 AM). Automates directory submissions and outreach emails.
-    *   **The Operator:** Runs weekly (Sun). Validates database integrity and installer stats.
+    *   **The Operator:** Runs weekly (Sun). **Scrapes Google Places API** to populate/update installer data.
     *   **The Auditor:** *[Currently Disabled]* Checks for broken links and site health.
 
 2.  **Strategic Agents (Manual/Ad-Hoc):**
@@ -62,10 +62,12 @@ Visit `http://localhost:3000`.
 ## Directory Structure
 
 *   **`app/`**: Next.js App Router.
-    *   `app/installers/[state]/[city]/`: Dynamic pSEO landing pages.
+    *   `app/installers/[state]/`: **[NEW]** State-level aggregation pages.
+    *   `app/installers/[state]/[city]/`: Dynamic pSEO landing pages with **Google Maps**.
     *   `app/admin/dashboard/`: Real-time "God Mode" dashboard for monitoring agents.
     *   `app/api/cron/`: Endpoints for autonomous agents (Promoter, Operator).
     *   `app/api/leads/`: Lead capture endpoint.
+    *   `components/`: UI Components (including new `ZipSearch.tsx`).
 *   **`scripts/`**: Legacy and manual agent scripts (e.g., seeding data).
 *   **`supabase/`**: SQL schemas and migration scripts (`agent_logs`, `installers`).
 *   **`lib/`**: Shared utilities, including `cron-utils.ts` for security and logging.
