@@ -2,37 +2,26 @@
 
 **Last Updated:** 2025-11-26
 **Status:** ✅ Real Data Integrated | 🚀 Live on Vercel
-**Architecture:** Modular Monolith with Autonomous Serverless Agents (Vercel Cron)
+**Architecture:** Lead Capture Engine with **n8n Automation** & **Angi API**
 
 ## 1. Project Mission
-A Programmatic SEO (pSEO) platform designed to capture organic search traffic for "EV charger installers in [City], [State]" queries.
-*   **Primary Goal:** Generate leads for electricians and sell them via arbitrage (Networx/Angi).
-*   **Secondary Goal:** Affiliate revenue via Amazon Associates (EV Chargers).
-*   **Target Audience:** EV owners needing home charging installation.
+A high-volume **Programmatic SEO (pSEO) Lead Generation Platform** for EV charger installations.
+*   **Primary Goal:** Capture homeowner intent ("EV charger installers near me") and sell leads to **Angi** via API.
+*   **Model:** Affiliate / Pay-Per-Lead (Arbitrage).
+*   **Key Pivot (Dec 1):** We NO LONGER list specific installers. We provide a "Matchmaking" service.
+*   **Target Scale:** 10,000+ City Landing Pages.
 
-## 2. "God Mode" 8-Agent Swarm Architecture
-We leverage a specialized team of 8 AI agents.
-**UPDATE (Nov 26):** The Operator now autonomously scrapes Google Places API to keep installer data fresh.
+## 2. "God Mode" Automation Architecture
+The system is now centered on **Content Generation** and **Lead Routing**.
 
-### A. The Autonomous Swarm (Vercel Cron)
-These agents run automatically on a schedule without human intervention.
-
-| Agent Name | Role | Schedule | Endpoint | Function |
-| :--- | :--- | :--- | :--- | :--- |
-| **The Promoter** | Outreach | Daily @ 10 AM | `/api/cron/promoter` | Automates directory submissions & email outreach. |
-| **The Auditor** | QA & Health | Weekly (Mon) | `/api/cron/auditor` | Checks site health (200 OK) & broken links. |
-| **The Operator** | Data Scraper | Weekly (Sun) | `/api/cron/google-places` | **Scrapes Google Places** for real installer data. |
-
-### B. The Strategic Swarm (Manual/Ad-Hoc)
-These agents are invoked manually for specific development or strategy tasks.
-
-| Agent Name | Role | Model | Function |
+### A. The Autonomous Swarm (n8n Workflows)
+| Agent Name | Role | Platform | Function |
 | :--- | :--- | :--- | :--- |
-| **The Overseer** | Project Manager | Claude 3.5 Sonnet | High-level orchestration & planning. |
-| **The Architect** | Lead Developer | Claude 3.5 Sonnet | Next.js/Supabase implementation. |
-| **The Liaison** | Business Logic | Claude 3.5 Haiku | API integrations & monetization logic. |
-| **The Strategist** | Content Director | Gemini 2.0 Flash | Content generation & Spintax. |
-| **The Analyst** | Growth Hacker | Gemini 2.0 Flash | PostHog analytics & optimization. |
+| **The Strategist** | **Content Engine** | n8n | **CRITICAL.** Generates high-quality, unique content for 10,000+ city pages. |
+| **The Liaison** | Lead Router | n8n | Receives form submissions -> Validates -> Sends to **Angi API**. |
+| **The Promoter** | Outreach | n8n | Builds backlinks to city pages to improve ranking. |
+| **The Operator** | *Deprecated* | n8n | *Formerly Scraper. Now repurposed for City Discovery/Data Mining.* |
+
 
 ## 3. System Architecture & Tech Stack
 
@@ -84,15 +73,3 @@ These agents are invoked manually for specific development or strategy tasks.
 3.  **Outreach Scale-Up:** Switch `Promoter` from "Simulation Mode" to real emailing (update SMTP creds).
 4.  **Content Expansion:** Use `Strategist` to generate more city content rows.
 
-## 6. How to Operate
-
-### Triggering Agents Manually
-Go to `/admin/dashboard`, enter the `CRON_SECRET` in the Agent Control Panel, and click "Run".
-
-### viewing Logs
-The Admin Dashboard (`/admin/dashboard`) displays a live feed of the `agent_logs` table.
-
-### Modifying Agents
-Edit the files in `app/api/cron/[agent_name]/route.ts`.
-*   Always use `logAgentAction()` to ensure visibility in the dashboard.
-*   Keep execution under 60s (Vercel Function Timeout) or use batching.

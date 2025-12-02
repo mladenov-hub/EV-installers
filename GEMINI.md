@@ -1,25 +1,30 @@
 # EV Installer Programmatic SEO Platform
 
 ## Project Overview
-This is a **Programmatic SEO (pSEO) platform** designed to capture organic search traffic for "EV charger installers in [City], [State]" queries. The system aggregates **real-time local installer data via Google Places API** to generate thousands of unique landing pages, monetizing traffic through lead arbitrage (Networx/Angi) and affiliate commissions (Amazon).
+This is a **Programmatic SEO (pSEO) Lead Generation Platform** designed to capture organic search traffic for "EV charger installers in [City], [State]" queries.
 
-The core of the project is an **8-Agent "God Mode" Swarm**—a mix of autonomous Vercel Cron jobs and manual CLI tools that handle everything from content generation to outreach and quality assurance.
+**The Strategy:**
+1.  **Traffic:** Generate 10,000+ unique landing pages (one for every city).
+2.  **Conversion:** Use a **"Get Matched" Lead Form** instead of listing specific installers.
+3.  **Monetization:** Send captured leads to the **Angi API** for a commission.
+
+The core of the project is an **n8n Automation Swarm** that handles content generation at scale.
 
 ## Architecture
 
 *   **Framework:** Next.js 15 (App Router)
 *   **Language:** TypeScript
-*   **Database:** Supabase (PostgreSQL)
-*   **Deployment:** Vercel (Edge/Serverless)
-*   **Styling:** Tailwind CSS
+*   **Database:** Supabase (PostgreSQL) - *Stores Leads & Content, not Installer Listings.*
+*   **Automation:** n8n (Docker)
+*   **Integration:** Angi API (Lead Selling)
 
 ### The "God Mode" Swarm
-The system uses a specialized team of AI agents:
+The system uses a specialized team of AI agents running on n8n:
 
-1.  **Autonomous Agents (Vercel Cron):**
-    *   **The Promoter:** Runs daily (10 AM). Automates directory submissions and outreach emails.
-    *   **The Operator:** Runs weekly (Sun). **Scrapes Google Places API** to populate/update installer data.
-    *   **The Auditor:** *[Currently Disabled]* Checks for broken links and site health.
+1.  **Autonomous Agents (n8n Workflows):**
+    *   **The Strategist:** **(Main Priority)** Generates SEO content for thousands of pages using AI Agents.
+    *   **The Liaison:** Handles the Lead Form submission and API connection to Angi.
+    *   **The Promoter:** Automates backlink building.
 
 2.  **Strategic Agents (Manual/Ad-Hoc):**
     *   **The Overseer:** Project management and orchestration.

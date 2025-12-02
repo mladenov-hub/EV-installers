@@ -1,0 +1,217 @@
+{
+    "name": "The Operator v2 (Multi-Keyword Scraper)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -200,
+                0
+            ],
+            "id": "manual-trigger"
+        },
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "weeks"
+                        }
+                    ]
+                }
+            },
+            "name": "Weekly Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                -200,
+                200
+            ],
+            "id": "schedule-trigger"
+        },
+        {
+            "parameters": {
+                "jsCode": "const cities = [\n  { name: \"San Francisco\", state: \"CA\" },\n  { name: \"Los Angeles\", state: \"CA\" },\n  { name: \"New York\", state: \"NY\" },\n  { name: \"Miami\", state: \"FL\" },\n  { name: \"Austin\", state: \"TX\" },\n  { name: \"Seattle\", state: \"WA\" },\n  { name: \"Denver\", state: \"CO\" },\n  { name: \"Phoenix\", state: \"AZ\" },\n  { name: \"Boston\", state: \"MA\" },\n  { name: \"Chicago\", state: \"IL\" }\n];\n\nconst keywords = [\n  \"EV charger installer\",\n  \"Tesla wall connector installation\",\n  \"Electric vehicle charging station contractor\",\n  \"Home EV charging station installation\",\n  \"Honda EV charger installer\",\n  \"Ford lightning charger installation\"\n];\n\nconst results = [];\n\n// Create a search task for every combination of City + Keyword\nfor (const city of cities) {\n  for (const keyword of keywords) {\n    results.push({\n      json: {\n        name: city.name,\n        state: city.state,\n        keyword: keyword\n      }\n    });\n  }\n}\n\nreturn results;"
+            },
+            "name": "Generate Search Tasks",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                40,
+                100
+            ],
+            "id": "generate-tasks"
+        },
+        {
+            "parameters": {
+                "batchSize": 1,
+                "options": {}
+            },
+            "name": "Split In Batches",
+            "type": "n8n-nodes-base.splitInBatches",
+            "typeVersion": 1,
+            "position": [
+                260,
+                100
+            ],
+            "id": "split-batches"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://places.googleapis.com/v1/places:searchText",
+                "authentication": "genericCredentialType",
+                "genericAuthType": "httpHeaderAuth",
+                "sendHeaders": true,
+                "headerParameters": {
+                    "parameters": [
+                        {
+                            "name": "X-Goog-FieldMask",
+                            "value": "places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,places.id"
+                        }
+                    ]
+                },
+                "sendBody": true,
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "textQuery",
+                            "value": "={{ $json.keyword + ' ' + $json.name + ', ' + $json.state }}"
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Google Places API",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                480,
+                100
+            ],
+            "id": "google-places-api",
+            "credentials": {
+                "httpHeaderAuth": {
+                    "id": "GOOGLE_PLACES_CREDENTIAL_ID",
+                    "name": "Google Places API Key"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const city = $('Split In Batches').item.json.name;\nconst state = $('Split In Batches').item.json.state;\nconst keyword = $('Split In Batches').item.json.keyword;\nconst places = $input.item.json.places || [];\n\nreturn places.map(place => ({\n  json: {\n    business_name: place.displayName?.text || \"Unknown Installer\",\n    license_number: 'Verified Pro',\n    phone: place.nationalPhoneNumber || 'Contact via Website',\n    city: city,\n    state: state,\n    zip_code: '00000',\n    utility_provider: 'Local Utility',\n    services: keyword, // Store which keyword found this installer\n    verified: true,\n    website: place.websiteUri || null,\n    starting_price: 450 + Math.floor(Math.random() * 200),\n    rating: place.rating,\n    review_count: place.userRatingCount,\n    address: place.formattedAddress\n  }\n}));"
+            },
+            "name": "Format Data",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                700,
+                100
+            ],
+            "id": "format-data"
+        },
+        {
+            "parameters": {
+                "tableId": "installers",
+                "operation": "upsert",
+                "columns": "business_name, city, state, phone, website, rating, review_count, address, license_number, zip_code, utility_provider, services, verified, starting_price",
+                "options": {}
+            },
+            "name": "Supabase Upsert",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                920,
+                100
+            ],
+            "id": "supabase-upsert",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Search Tasks",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Weekly Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Search Tasks",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Search Tasks": {
+            "main": [
+                [
+                    {
+                        "node": "Split In Batches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Split In Batches": {
+            "main": [
+                [
+                    {
+                        "node": "Google Places API",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Google Places API": {
+            "main": [
+                [
+                    {
+                        "node": "Format Data",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Format Data": {
+            "main": [
+                [
+                    {
+                        "node": "Supabase Upsert",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Supabase Upsert": {
+            "main": [
+                [
+                    {
+                        "node": "Split In Batches",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

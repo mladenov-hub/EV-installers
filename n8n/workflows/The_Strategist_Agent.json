@@ -1,0 +1,186 @@
+{
+    "name": "The Strategist (AI Agent Version)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -200,
+                0
+            ],
+            "id": "manual-trigger"
+        },
+        {
+            "parameters": {
+                "tableId": "city_content",
+                "limit": 1,
+                "filters": {
+                    "conditions": [
+                        {
+                            "key": "intro_text",
+                            "operator": "isEmpty"
+                        }
+                    ]
+                }
+            },
+            "name": "Get Empty Cities",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                40,
+                0
+            ],
+            "id": "get-cities",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "promptType": "define",
+                "text": "={{ \"You are an expert SEO copywriter. Generate content for an EV Installer directory page for \" + $('Get Empty Cities').item.json.city + \", \" + $('Get Empty Cities').item.json.state + \".\\n\\nOutput a JSON object with the following fields:\\n1. intro_text: A 150-word high-converting intro focusing on local rebates and finding licensed electricians.\\n2. why_hire_text: A 100-word section on 'Why Hire a Pro in \" + $('Get Empty Cities').item.json.city + \"'.\\n3. rebates_info: A short paragraph mentioning potential local utility rebates (generic but plausible).\\n4. faqs: An array of 3 objects {question, answer} relevant to EV installation in this area.\\n\\nReturn ONLY the JSON object.\" }}",
+                "options": {
+                    "systemMessage": "You are a helpful assistant that outputs valid JSON only."
+                }
+            },
+            "name": "AI Agent",
+            "type": "@n8n/n8n-nodes-langchain.agent",
+            "typeVersion": 1.6,
+            "position": [
+                260,
+                0
+            ],
+            "id": "ai-agent"
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "options": {
+                    "responseFormat": "json_object"
+                }
+            },
+            "name": "OpenAI Chat Model",
+            "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+            "typeVersion": 1,
+            "position": [
+                260,
+                220
+            ],
+            "id": "openai-chat-model",
+            "credentials": {
+                "openAiApi": {
+                    "id": "OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAI account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "jsCode": "const content = JSON.parse($input.item.json.output);\n\nreturn {\n  json: {\n    intro_text: content.intro_text,\n    why_hire_text: content.why_hire_text,\n    rebates_info: content.rebates_info,\n    faqs: content.faqs\n  }\n};"
+            },
+            "name": "Parse JSON",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                580,
+                0
+            ],
+            "id": "parse-json"
+        },
+        {
+            "parameters": {
+                "tableId": "city_content",
+                "operation": "update",
+                "columns": "intro_text, why_hire_text, rebates_info, faqs",
+                "options": {}
+            },
+            "name": "Update City Content",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                800,
+                0
+            ],
+            "id": "update-content",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Get Empty Cities",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Empty Cities": {
+            "main": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "OpenAI Chat Model": {
+            "ai_languageModel": [
+                [
+                    {
+                        "node": "AI Agent",
+                        "type": "ai_languageModel",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "AI Agent": {
+            "main": [
+                [
+                    {
+                        "node": "Parse JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Parse JSON": {
+            "main": [
+                [
+                    {
+                        "node": "Update City Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update City Content": {
+            "main": [
+                [
+                    {
+                        "node": "Get Empty Cities",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

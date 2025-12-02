@@ -1,0 +1,139 @@
+{
+    "name": "The Strategist (AI Content Generator)",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Manual Trigger",
+            "type": "n8n-nodes-base.manualTrigger",
+            "typeVersion": 1,
+            "position": [
+                -200,
+                0
+            ],
+            "id": "manual-trigger"
+        },
+        {
+            "parameters": {
+                "tableId": "city_content",
+                "limit": 1,
+                "filters": {
+                    "conditions": [
+                        {
+                            "key": "intro_text",
+                            "operator": "isEmpty"
+                        }
+                    ]
+                }
+            },
+            "name": "Get Empty Cities",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                40,
+                0
+            ],
+            "id": "get-cities",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "model": "gpt-4o-mini",
+                "messages": {
+                    "values": [
+                        {
+                            "content": "={{ \"Write a high-converting, SEO-optimized intro paragraph (150 words) for an EV Installer directory page for \" + $json.city + \", \" + $json.state + \". Focus on local rebates, Tesla installation, and finding licensed electricians. Return ONLY the text, no markdown.\" }}",
+                            "role": "user"
+                        }
+                    ]
+                }
+            },
+            "name": "Generate Intro",
+            "type": "n8n-nodes-base.openAi",
+            "typeVersion": 1,
+            "position": [
+                260,
+                0
+            ],
+            "id": "generate-intro",
+            "credentials": {
+                "openAiApi": {
+                    "id": "OPENAI_CREDENTIAL_ID",
+                    "name": "OpenAI account"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "tableId": "city_content",
+                "operation": "update",
+                "columns": "intro_text",
+                "options": {}
+            },
+            "name": "Update City Content",
+            "type": "n8n-nodes-base.supabase",
+            "typeVersion": 1,
+            "position": [
+                480,
+                0
+            ],
+            "id": "update-content",
+            "credentials": {
+                "supabaseApi": {
+                    "id": "SUPABASE_CREDENTIAL_ID",
+                    "name": "Supabase account"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Manual Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Get Empty Cities",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Get Empty Cities": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Intro",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Intro": {
+            "main": [
+                [
+                    {
+                        "node": "Update City Content",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Update City Content": {
+            "main": [
+                [
+                    {
+                        "node": "Get Empty Cities",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}
