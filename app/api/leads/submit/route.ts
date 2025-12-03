@@ -1,11 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-// Initialize Supabase Client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
 export async function POST(request: Request) {
     try {
         const body = await request.json();
@@ -14,6 +9,17 @@ export async function POST(request: Request) {
         if (!body.zipCode || !body.email || !body.phone) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
+
+        // Initialize Supabase Client (runtime check)
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+
+        if (!supabaseUrl || !supabaseServiceKey) {
+            console.error('Supabase credentials not configured');
+            return NextResponse.json({ error: 'Service configuration error' }, { status: 500 });
+        }
+
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
         // 1. Save to Supabase 'leads' table
         const { data, error } = await supabase
