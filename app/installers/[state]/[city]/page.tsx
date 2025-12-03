@@ -112,102 +112,215 @@ export default async function CityPage({ params }: PageProps) {
     // Use raw slug processing for DB (assuming DB has spaces, e.g. "San Francisco")
     const dbCityQuery = decodeURIComponent(city).replace(/-/g, ' ');
     const decodedState = state.toUpperCase();
-    <div className="flex items-center gap-2">
-        <MapPin className="w-4 h-4 text-blue-500" />
-        <span>{installer.city}, {installer.state}</span>
-    </div>
-                                            </div >
-        <div className="space-y-2 text-sm text-slate-600">
-            {installer.website && (
-                <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-900">Web:</span>
-                    <a href={installer.website} target="_blank" rel="nofollow" className="text-blue-600 hover:underline truncate max-w-[200px]">{installer.website.replace(/^https?:\/\//, '')}</a>
-                </div>
-            )}
-            {installer.phone && (
-                <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-900">Tel:</span>
-                    <a href={`tel:${installer.phone}`} className="text-slate-600 hover:text-blue-600">{installer.phone}</a>
-                </div>
-            )}
-        </div>
-                                        </div >
 
-        <div className="flex gap-3">
-            <Link
-                href={`/get-quote?installer=${installer.id}`}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-center transition-colors"
-            >
-                Request Quote
-            </Link>
-            <button className="px-4 py-3 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 font-medium transition-colors">
-                View Profile
-            </button>
-        </div>
-                                    </div >
-                                </div >
-                            </div >
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-        {/* Google Map Section */ }
-    {
-        (installer.google_place_id || installer.address) && (
-            <div className="border-t border-slate-200 bg-slate-50">
-                <GoogleMap
-                    placeId={installer.google_place_id}
-                    businessName={installer.business_name}
-                    address={installer.address || `${installer.city}, ${installer.state}`}
-                    phone={installer.phone}
-                />
-            </div>
-        )
+    // Graceful fallback if DB is not connected
+    const supabase = (supabaseUrl && supabaseKey)
+        ? createClient(supabaseUrl, supabaseKey)
+        : null;
+
+    // 1. Get Content (SEO)
+    let content = null;
+    if (supabase) {
+        const { data } = await supabase
+            .from('city_content')
+            .select('*')
+            .ilike('city', dbCityQuery) // Relaxed matching
+            .eq('state', decodedState)
+            .single();
+        content = data;
     }
-                        </div >
-                    ))
-}
-                </div >
 
-    {/* Sidebar - Lead Form & Affiliates */ }
-    < div className = "lg:col-span-1" >
-        <div className="sticky top-8">
-            <GetQuoteForm city={formattedCity} state={decodedState} />
+    // 2. Get Installers (for the list)
+    let installers: any[] | null = [];
+    let count = 0;
 
-            <div className="mt-6 bg-blue-50 p-6 rounded-xl border border-blue-100">
-                <h3 className="font-bold text-blue-900 mb-2">Why use our platform?</h3>
-                <ul className="space-y-3 text-sm text-blue-800">
-                    <li className="flex gap-2">✓ Verified License & Insurance</li>
-                    <li className="flex gap-2">✓ Compare 3+ Quotes Instantly</li>
-                    <li className="flex gap-2">✓ Save up to 30% on Installation</li>
-                </ul>
-            </div>
+    if (supabase) {
+        console.log(`🔍 Querying DB for City: "${dbCityQuery}", State: "${decodedState}"`);
 
-            {/* Recommended Chargers */}
-            <div className="mt-8">
-                <h3 className="font-bold text-slate-900 mb-4">Recommended Chargers</h3>
-                <div className="space-y-4">
-                    <AffiliateProduct
-                        asin="B0C6YMS4KH"
-                        title="Tesla Wall Connector - Universal Electric Vehicle Charger"
-                        price="$580.00"
-                        rating={4.8}
-                        reviews={1250}
-                        image="https://m.media-amazon.com/images/I/61y4J2vTwIL._AC_SL1500_.jpg"
-                    />
-                    <AffiliateProduct
-                        asin="B0B2Z5W1J4"
-                        title="ChargePoint Home Flex Level 2 WiFi Charger"
-                        price="$549.00"
-                        rating={4.5}
-                        reviews={890}
-                        image="https://m.media-amazon.com/images/I/51j3f+L-92L._AC_SL1000_.jpg"
-                    />
+        const { data: installerData, count: installerCount, error } = await supabase
+            .from('installers')
+            .select('*', { count: 'exact' })
+            .ilike('city', dbCityQuery) // Relaxed matching
+            .ilike('state', decodedState); // Changed from eq to ilike to match getCityData logic
+
+        if (error) {
+            console.error('❌ Supabase Query Error:', error);
+        } else {
+            console.log(`✅ Found ${installerCount} installers`);
+        }
+
+        installers = installerData;
+        count = installerCount || 0;
+    }
+
+    const installerCount = count || 0;
+    const startingPrice = 450;
+
+    return (
+        <div className="min-h-screen bg-slate-50">
+            {/* Hero Section */}
+            <div className="bg-slate-900 text-white py-20">
+                <div className="max-w-7xl mx-auto px-4 text-center">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                        {content?.meta_title || `Top Rated EV Charger Installers in ${formattedCity}, ${decodedState}`}
+                    </h1>
+                    <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
+                        {content?.intro_text || `Find verified local electricians in ${formattedCity} to install your Level 2 home charging station. Get quotes, compare prices, and charge faster.`}
+                    </p>
+
+                    <div className="flex justify-center gap-8 text-sm font-medium text-slate-400">
+                        <div className="flex items-center gap-2">
+                            <span className="text-green-400">●</span> {installerCount} Pros Available
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-blue-400">●</span> Verified License
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-purple-400">●</span> Est. ${startingPrice}+
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+                {/* Main Content - Installer List */}
+                <div className="lg:col-span-2 space-y-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900">Verified Installers</h2>
+                        <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                            {installerCount} Results
+                        </span>
+                    </div>
+
+                    {installers?.map((installer: any) => (
+                        <div key={installer.id} className="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                            <div className="p-6">
+                                <div className="flex justify-between items-start gap-4">
+                                    <div className="flex-1">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h3 className="text-xl font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                                                    {installer.business_name}
+                                                </h3>
+                                                {installer.verified && (
+                                                    <div className="flex items-center gap-1 text-green-600 text-sm font-medium mt-1">
+                                                        <CheckCircle2 className="w-4 h-4" /> Verified License
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="flex items-center gap-1 justify-end text-yellow-500 font-bold">
+                                                    <Star className="w-4 h-4 fill-current" />
+                                                    <span>{installer.rating || '4.8'}</span>
+                                                    <span className="text-slate-400 text-sm font-normal">({installer.review_count || 12})</span>
+                                                </div>
+                                                <p className="text-sm text-slate-500 mt-1">Starting at ${installer.starting_price || '499'}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-6">
+                                            <div className="space-y-2 text-sm text-slate-600">
+                                                <div className="flex items-center gap-2">
+                                                    <Shield className="w-4 h-4 text-blue-500" />
+                                                    <span>License: {installer.license_number || 'Verified'}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <MapPin className="w-4 h-4 text-blue-500" />
+                                                    <span>{installer.city}, {installer.state}</span>
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2 text-sm text-slate-600">
+                                                {installer.website && (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-medium text-slate-900">Web:</span>
+                                                        <a href={installer.website} target="_blank" rel="nofollow" className="text-blue-600 hover:underline truncate max-w-[200px]">{installer.website.replace(/^https?:\/\//, '')}</a>
+                                                    </div>
+                                                )}
+                                                {installer.phone && (
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-medium text-slate-900">Tel:</span>
+                                                        <a href={`tel:${installer.phone}`} className="text-slate-600 hover:text-blue-600">{installer.phone}</a>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-3">
+                                            <Link
+                                                href={`/get-quote?installer=${installer.id}`}
+                                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg text-center transition-colors"
+                                            >
+                                                Request Quote
+                                            </Link>
+                                            <button className="px-4 py-3 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 font-medium transition-colors">
+                                                View Profile
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Google Map Section */}
+                            {(installer.google_place_id || installer.address) && (
+                                <div className="border-t border-slate-200 bg-slate-50">
+                                    <GoogleMap
+                                        placeId={installer.google_place_id}
+                                        businessName={installer.business_name}
+                                        address={installer.address || `${installer.city}, ${installer.state}`}
+                                        phone={installer.phone}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Sidebar - Lead Form & Affiliates */}
+                <div className="lg:col-span-1">
+                    <div className="sticky top-8">
+                        <GetQuoteForm city={formattedCity} state={decodedState} />
+
+                        <div className="mt-6 bg-blue-50 p-6 rounded-xl border border-blue-100">
+                            <h3 className="font-bold text-blue-900 mb-2">Why use our platform?</h3>
+                            <ul className="space-y-3 text-sm text-blue-800">
+                                <li className="flex gap-2">✓ Verified License & Insurance</li>
+                                <li className="flex gap-2">✓ Compare 3+ Quotes Instantly</li>
+                                <li className="flex gap-2">✓ Save up to 30% on Installation</li>
+                            </ul>
+                        </div>
+
+                        {/* Recommended Chargers */}
+                        <div className="mt-8">
+                            <h3 className="font-bold text-slate-900 mb-4">Recommended Chargers</h3>
+                            <div className="space-y-4">
+                                <AffiliateProduct
+                                    asin="B0C6YMS4KH"
+                                    title="Tesla Wall Connector - Universal Electric Vehicle Charger"
+                                    price="$580.00"
+                                    rating={4.8}
+                                    reviews={1250}
+                                    image="https://m.media-amazon.com/images/I/61y4J2vTwIL._AC_SL1500_.jpg"
+                                />
+                                <AffiliateProduct
+                                    asin="B0B2Z5W1J4"
+                                    title="ChargePoint Home Flex Level 2 WiFi Charger"
+                                    price="$549.00"
+                                    rating={4.5}
+                                    reviews={890}
+                                    image="https://m.media-amazon.com/images/I/51j3f+L-92L._AC_SL1000_.jpg"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <StickyCTA />
         </div>
-                </div >
-
-            </div >
-
-    <StickyCTA />
-        </div >
     );
 }
